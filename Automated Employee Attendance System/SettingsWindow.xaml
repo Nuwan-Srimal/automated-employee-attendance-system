@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Automated_Employee_Attendance_System"
              mc:Ignorable="d" 
+             RenderOptions.BitmapScalingMode="HighQuality"
              FontFamily="Microsoft Sans Serif"
              SnapsToDevicePixels="True"
              d:DesignWidth="800">

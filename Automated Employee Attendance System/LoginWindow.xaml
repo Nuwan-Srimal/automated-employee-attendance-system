@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Automated_Employee_Attendance_System"
         mc:Ignorable="d"
+        RenderOptions.BitmapScalingMode="HighQuality"
         Foreground="{DynamicResource Forground}"
         AllowsTransparency="True"
         WindowStyle="None"
