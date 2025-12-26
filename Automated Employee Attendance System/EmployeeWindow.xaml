@@ -18,6 +18,46 @@
 
         <TabControl Style="{DynamicResource TabControl}">
             <TabItem Style="{DynamicResource TabItem}" Header="Employee">
+
+
+
+
+                <DataGrid x:Name="EmployeeGrid"
+Background="Transparent"
+RowBackground="White"
+AlternatingRowBackground="#f0f0f0"
+SnapsToDevicePixels="True"
+AutoGenerateColumns="False"
+ItemsSource="{Binding UpcomingBirthdays}"
+CanUserResizeColumns="False"
+ScrollViewer.CanContentScroll="True"
+ScrollViewer.VerticalScrollBarVisibility="Hidden"
+Height="500"
+CellStyle="{StaticResource DataGridCellStyle}"
+Style="{StaticResource DataGridStyle}"
+ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+RowStyle="{StaticResource DataGridRowStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding id}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                        <DataGridTextColumn Header="Employee Name" Binding="{Binding name}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                        <DataGridTextColumn Header="NIC" Binding="{Binding nic}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+
+
+                        <DataGridTemplateColumn Header="Action" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Delete"
+                                            Style="{DynamicResource ActionButton}"
+                                     Click="DeleteEmployee_Click"
+                                    CommandParameter="{Binding}" />
+
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+
             </TabItem>
             
             
@@ -77,10 +117,8 @@ FontWeight="Regular"/>
 
                                             <StackPanel>
                                                 <TextBlock Text="Employee ID" FontSize="12" Foreground="Gray"/>
-                                                <TextBox Style="{DynamicResource TextBoxStyle}"
-                            
-                            
-                            />
+                                                <TextBox x:Name="EmpId"  PreviewTextInput="EmpId_PreviewTextInput"
+         PreviewKeyDown="EmpId_PreviewKeyDown" Style="{DynamicResource TextBoxStyle}" />
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
@@ -105,14 +143,14 @@ FontWeight="Regular"/>
 
                                             <StackPanel>
                                                 <TextBlock Text="First Name" FontSize="12" Foreground="Gray"/>
-                                                <TextBox Style="{DynamicResource TextBoxStyle}" 
+                                                <TextBox x:Name="EmpName" Style="{DynamicResource TextBoxStyle}" 
                              
                            />
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
                                                 <TextBlock Text="Last Name" FontSize="12" Foreground="Gray"/>
-                                                <TextBox Style="{DynamicResource TextBoxStyle}" 
+                                                <TextBox x:Name="EmpNIC" Style="{DynamicResource TextBoxStyle}" 
                          
                             />
                                             </StackPanel>
@@ -123,7 +161,7 @@ FontWeight="Regular"/>
 
                                 <StackPanel Margin="0,15,0,0" Orientation="Horizontal">
                                     <Button Width="100" Height="35" Content="Cancel" Margin="10,0,0,0" Style="{DynamicResource NavigationButtonStyle}"/>
-                                    <Button Width="100" Height="35" Margin="10,0,0,0" Content="Save Profile" Style="{DynamicResource ActionButton}"/>
+                                    <Button Click="AddEmployee_Click" Width="100" Height="35" Margin="10,0,0,0" Content="Add Employee" Style="{DynamicResource ActionButton}"/>
                                 </StackPanel>
                                 
                                 

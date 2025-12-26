@@ -23,15 +23,20 @@
                     <ColumnDefinition Width="400" />
                 </Grid.ColumnDefinitions>
 
-               
-       
 
 
-                    <Image  Grid.Column="0" Width="500" Source="/UI/Login_D.png"
-                           HorizontalAlignment="Center"/>
+                <StackPanel HorizontalAlignment="Center" Margin="17,0,0,0" VerticalAlignment="Center">
+                    <Image x:Name="MyGifImage" Width="380"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    SnapsToDevicePixels="True" />
+                </StackPanel>
+
+                                          
                 
 
                 <Border Grid.Column="1" Width="360"
+                        Margin="15"
       Padding="30"
       Background="{DynamicResource Background}"
       CornerRadius="16"
@@ -43,16 +48,23 @@
                         Opacity="0.2"/>
                     </Border.Effect>
 
+                  
+
                     <StackPanel>
+
+                        <StackPanel HorizontalAlignment="Right">
+                            <Button Click="Close_Click" Content="X" Style="{DynamicResource ActionButton}" Width="25" />
+                        </StackPanel>
 
                         <!-- Icon -->
                         <Border Width="44" Height="44"
-              Background="#E9F1FF"
+              Background="{DynamicResource ContBackground}"
               CornerRadius="22"
               HorizontalAlignment="Center"
               Margin="0,0,0,16">
                             <TextBlock Text="🔒"
                      FontSize="20"
+                                       Foreground="{DynamicResource Forground}"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Center"/>
                         </Border>
