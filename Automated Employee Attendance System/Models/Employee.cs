@@ -12,4 +12,7 @@ namespace Automated_Employee_Attendance_System.Models
         public string name { get; set; }
         public string nic { get; set; }
     }
+
+
+
 }

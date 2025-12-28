@@ -22,17 +22,33 @@ namespace Automated_Employee_Attendance_System
     public partial class EmployeeWindow : UserControl
     {
         private TextBlock Status;
+        // GLOBAL (MainWindow.xaml.cs)
+        byte[]? tempFingerprintTemplate = null;
 
-        HttpClient client = new ESP_Services().client;
-        string espBaseUrl = new ESP_Services().espBaseUrl;
+        private ESP_Services _espServices; // Shared instance
+        HttpClient client => _espServices.client;
+        string espBaseUrl => _espServices.espBaseUrl;
         public Action<string>? OnStatusChanged;
+        
         public EmployeeWindow()
         {
-
             InitializeComponent();
             Status = this.FindName("Status") as TextBlock;
-            Loaded += LoadingWindow_Loaded; // window render වෙන විට
-            _ = LoadEmployees(); // Fire and forget, since constructors can't be async
+            
+            _espServices = new ESP_Services();
+            _espServices.OnStatusChanged += (msg) => OnStatusChanged?.Invoke(msg);
+            
+            
+            Loaded += LoadingWindow_Loaded;
+            
+            // Initialize ESP connection
+            _ = InitializeESP();
+        }
+
+        private async Task InitializeESP()
+        {
+            await _espServices.DetectESP();
+            await LoadEmployees();
         }
 
         private async void LoadingWindow_Loaded(object sender, RoutedEventArgs e)
@@ -51,18 +67,69 @@ namespace Automated_Employee_Attendance_System
                 });
             });
 
-          
-
          
+
+        
+        }
+        private async void ScanFingerprint_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(espBaseUrl))
+            {
+                CustomMessageBox.Show("ESP not connected");
+                return;
+            }
+
+            CustomMessageBox.Show("Place finger on sensor...");
+
+            try
+            {
+                var res = await client.GetAsync($"{espBaseUrl}/scanFingerprint");
+
+                if (!res.IsSuccessStatusCode)
+                {
+                    CustomMessageBox.Show("Fingerprint scan failed");
+                    return;
+                }
+
+                var json = await res.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+
+                // 🔴 CHECK if template exists
+                if (doc.RootElement.TryGetProperty("template", out JsonElement templateElement))
+                {
+                    string base64 = templateElement.GetString();
+                    tempFingerprintTemplate = Convert.FromBase64String(base64);
+                    CustomMessageBox.Show("Fingerprint captured (TEMP)");
+                }
+                else if (doc.RootElement.TryGetProperty("finger_id", out JsonElement fingerIdElement))
+                {
+                    // 🟡 FALLBACK: Use finger_id as temporary identifier
+                    int fingerId = fingerIdElement.GetInt32();
+
+                    // Store finger_id as bytes (temporary workaround)
+                    tempFingerprintTemplate = BitConverter.GetBytes(fingerId);
+
+                    CustomMessageBox.Show($"Fingerprint ID: {fingerId} (TEMP)");
+                }
+                else
+                {
+                    CustomMessageBox.Show("Invalid response from ESP");
+                    SystemServices.Log($"ESP Response: {json}");
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show($"Error: {ex.Message}");
+                SystemServices.Log($"Fingerprint scan error: {ex.Message}");
+            }
         }
 
 
         private async void AddEmployee_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(espBaseUrl))
+            if (tempFingerprintTemplate == null)
             {
-                CustomMessageBox.Show("ESP not connected");
-                SystemServices.Log("Fail To Add Employee (ESP Not Connected)");                
+                CustomMessageBox.Show("Scan fingerprint first");
                 return;
             }
 
@@ -70,44 +137,30 @@ namespace Automated_Employee_Attendance_System
             {
                 id = EmpId.Text,
                 name = EmpName.Text,
-                nic = EmpNIC.Text
+                nic = EmpNIC.Text,
+                fingerprint = Convert.ToBase64String(tempFingerprintTemplate)
             };
 
             var json = JsonSerializer.Serialize(emp);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var res = await client.PostAsync($"{espBaseUrl}/addEmployee", content);
-            var body = await res.Content.ReadAsStringAsync();
 
             if (!res.IsSuccessStatusCode)
             {
                 CustomMessageBox.Show("SD Card Save Failed");
-                SystemServices.Log("SD Card Save Failed");
                 return;
             }
 
-            using var doc = JsonDocument.Parse(body);
-            string status = doc.RootElement.GetProperty("status").GetString();
+            CustomMessageBox.Show("Employee + Fingerprint Saved");
 
-            if (status == "ok")
-            {
-                CustomMessageBox.Show("SD Card Save Complete");
-                EmpId.Text = "";
-                EmpName.Text = "";
-                EmpNIC.Text = "";
-                SystemServices.Log("SD Card Save Complete");
-                EmpId.Text = "";
-                EmpName.Text = "";
-                EmpNIC.Text = "";
-            }
-
-            else
-                CustomMessageBox.Show("SD Card Error");
-                SystemServices.Log("SD Card Error");
+            // CLEAR
+            EmpId.Text = EmpName.Text = EmpNIC.Text = "";
+            tempFingerprintTemplate = null;
 
             await LoadEmployees();
-
         }
+
 
 
 
@@ -163,7 +216,7 @@ namespace Automated_Employee_Attendance_System
 
 
 
-        async Task LoadEmployees()
+        public async Task LoadEmployees()
         {
             if (string.IsNullOrEmpty(espBaseUrl))
                 return;

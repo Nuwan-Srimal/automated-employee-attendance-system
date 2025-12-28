@@ -8,6 +8,7 @@ using System.Windows;
 using System.Text.Json;
 
 
+
 namespace Automated_Employee_Attendance_System.Services
 {
 
@@ -45,15 +46,16 @@ namespace Automated_Employee_Attendance_System.Services
             // 🔹 LAN MODE
             for (int i = 1; i < 255; i++)
             {
-                string ip = $"http://192.168.1.7/discover";
+                string ip = $"http://192.168.1.37/discover";
                 if (await Ping(ip))
                 {
                   
                     OnStatusChanged?.Invoke($"ESP Found on LAN ({ip})");
                     SystemServices.Log($"ESP Found on LAN ({ip})");
                     espBaseUrl = ip.Replace("/discover", "");
-                   
-                   
+                    
+
+
                     return;
                 }
 
