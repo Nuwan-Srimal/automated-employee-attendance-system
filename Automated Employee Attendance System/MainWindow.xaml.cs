@@ -59,6 +59,7 @@ namespace Automated_Employee_Attendance_System
         #region Navigation
 
         private void EmployeeWindow_Click(object sender, RoutedEventArgs e) => LoadView(new EmployeeWindow());
+        private void Attendance_Click(object sender, RoutedEventArgs e) => LoadView(new AttendanceView());
         private void Settings_Click(object sender, RoutedEventArgs e) => LoadView(new SettingsWindow());
 
         private void LoadView(UserControl view)

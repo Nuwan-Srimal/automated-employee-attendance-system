@@ -170,6 +170,7 @@
 
                 <!-- Attendance -->
                 <RadioButton x:Name="Attendance_Tab" Height="44" Width="260"
+                             Click="Attendance_Click"
                  Style="{StaticResource SelectableRadioButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8A5;"
