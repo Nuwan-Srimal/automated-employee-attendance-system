@@ -30,11 +30,14 @@ namespace Automated_Employee_Attendance_System
 
             Dashbord_Tab.IsChecked = true;
             LoadView(new DashboardWindow());
+<<<<<<< HEAD
         }
 
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
             LoadView(new DashboardWindow());
+=======
+>>>>>>> ui
         }
 
 
@@ -58,6 +61,7 @@ namespace Automated_Employee_Attendance_System
 
         #region Navigation
 
+        private void Dashbord_Click(object sender, RoutedEventArgs e) => LoadView(new DashboardWindow());
         private void EmployeeWindow_Click(object sender, RoutedEventArgs e) => LoadView(new EmployeeWindow());
         private void Settings_Click(object sender, RoutedEventArgs e) => LoadView(new SettingsWindow());
 
