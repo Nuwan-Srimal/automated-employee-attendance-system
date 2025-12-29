@@ -25,7 +25,7 @@ namespace Automated_Employee_Attendance_System
             // ✅ ONLY HERE Home opens
             Loaded += async (_, _) => await _esp.DetectESP();
             _esp.OnStatusChanged = SetStatus;
-            Loaded += LoadingWindow_Loaded; // window render වෙන විට
+            
             ApplyAccess();
             ThemeManager.ApplyTheme(this);
 
@@ -34,26 +34,7 @@ namespace Automated_Employee_Attendance_System
         }
 
 
-        private async void LoadingWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            // GIF load background thread
-            await Task.Run(() =>
-            {
-                string baseFolder = AppDomain.CurrentDomain.BaseDirectory;
-                string gifPath = System.IO.Path.Combine(baseFolder, "UI", "Wonder_Things.gif");
-                var gifUri = new Uri(gifPath, UriKind.Absolute);
 
-                Dispatcher.Invoke(() =>
-                {
-                    AnimationBehavior.SetSourceUri(MyGifImage, gifUri);
-                    AnimationBehavior.SetRepeatBehavior(MyGifImage, System.Windows.Media.Animation.RepeatBehavior.Forever);
-                });
-            });
-
-
-
-
-        }
 
 
 
