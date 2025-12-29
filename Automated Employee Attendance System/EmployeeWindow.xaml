@@ -64,7 +64,7 @@ RowStyle="{StaticResource DataGridRowStyle}">
             </TabItem>
             
             
-            <TabItem Width="auto" Style="{DynamicResource TabItem}" Header="  >  Enroll Fingerprint">
+            <TabItem Width="auto"  Style="{DynamicResource TabItem}" Header="  >  Enroll Fingerprint">
 
                 <StackPanel>
 
