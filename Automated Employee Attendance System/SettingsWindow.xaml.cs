@@ -98,29 +98,29 @@ namespace Automated_Employee_Attendance_System
 
         #region Time
 
-        private async void SyncTime_Click(object sender, RoutedEventArgs e)
-        {
-            var now = DateTime.Now;
+        //  private async void SyncTime_Click(object sender, RoutedEventArgs e)
+        //  {
+        //  var now = DateTime.Now;
+        //
+        //  var json = new
+        //    {
+        //     y = now.Year,
+        //    mo = now.Month,
+        //    d = now.Day,
+        //   h = now.Hour,
+        //  mi = now.Minute,
+        //  s = now.Second
+        //   };
 
-            var json = new
-            {
-                y = now.Year,
-                mo = now.Month,
-                d = now.Day,
-                h = now.Hour,
-                mi = now.Minute,
-                s = now.Second
-            };
+        //  string body = JsonSerializer.Serialize(json);
 
-            string body = JsonSerializer.Serialize(json);
+        //  var res = await client.PostAsync(
+        //   espBaseUrl + "/settime",
+        //   new StringContent(body, Encoding.UTF8, "application/json")
+        //       );
 
-            var res = await client.PostAsync(
-                espBaseUrl + "/settime",
-                new StringContent(body, Encoding.UTF8, "application/json")
-            );
-
-            MessageBox.Show("Time Synced");
-        }
+        //    MessageBox.Show("Time Synced"); 
+        //    }
 
         #endregion
 

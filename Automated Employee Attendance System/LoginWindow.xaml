@@ -51,7 +51,7 @@
 
                   
 
-                    <StackPanel>
+                    <StackPanel Margin="15">
 
                         <StackPanel HorizontalAlignment="Right">
                             <Button Click="Close_Click" Content="X" Style="{DynamicResource ActionButton}" Width="25" />
@@ -87,7 +87,7 @@
                  FontWeight="SemiBold"
                  Margin="0,0,0,6"/>
 
-                        <TextBox x:Name="UserName" Height="42" Style="{DynamicResource TextBoxStyle}" />
+                        <TextBox x:Name="UserName"  Style="{DynamicResource TextBoxStyle}" />
 
                         <!-- Password -->
                         <TextBlock Text="Password"
@@ -95,7 +95,7 @@
                  FontWeight="SemiBold"
                  Margin="0,18,0,6"/>
 
-                        <PasswordBox x:Name="Password" Height="42"
+                        <PasswordBox x:Name="Password" 
                     />
 
                         <!-- Remember + Forgot -->
@@ -116,25 +116,12 @@
                         </Grid>
 
                         <!-- Login Button -->
-                        <Button Content="Login" FontSize="19"
-              Height="44"
-                                
+                        <Button Content="Login" 
+           
                                 Click="Login_Click"
              Style="{DynamicResource ActionButton}"
-                                Width="150"
-              FontWeight="SemiBold"
-              BorderThickness="0"
-                                IsDefault="True"
-              Cursor="Hand">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}"
-                          CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
+                                Width="150">
+
                         </Button>
 
                         <!-- Status -->

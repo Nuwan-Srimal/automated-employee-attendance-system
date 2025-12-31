@@ -25,18 +25,6 @@ namespace Automated_Employee_Attendance_System.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SystemDefalt")]
-        public string AppTheme {
-            get {
-                return ((string)(this["AppTheme"]));
-            }
-            set {
-                this["AppTheme"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool SendDailyReport {
             get {
@@ -56,6 +44,18 @@ namespace Automated_Employee_Attendance_System.Properties {
             }
             set {
                 this["SendAttendanceEmails"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SystemDefault")]
+        public string AppTheme {
+            get {
+                return ((string)(this["AppTheme"]));
+            }
+            set {
+                this["AppTheme"] = value;
             }
         }
     }
