@@ -22,8 +22,7 @@ namespace Automated_Employee_Attendance_System
         {
             InitializeComponent();
             _user = user;
-            // ✅ ONLY HERE Home opens
-            Loaded += async (_, _) => await _esp.DetectESP();
+            
             _esp.OnStatusChanged = SetStatus;
             
             ApplyAccess();
@@ -31,6 +30,8 @@ namespace Automated_Employee_Attendance_System
 
             Dashbord_Tab.IsChecked = true;
             LoadView(new DashboardWindow());
+
+            Loaded += async (_, _) => await _esp.ConnectToSavedDevice();
         }
 
 

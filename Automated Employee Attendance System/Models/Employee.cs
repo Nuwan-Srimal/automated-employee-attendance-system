@@ -8,10 +8,11 @@ namespace Automated_Employee_Attendance_System.Models
 {
     public class Employee
     {
-        public string id { get; set; }
+        public string emp_id { get; set; }
         public string name { get; set; }
         public string nic { get; set; }
     }
+
 
 
 

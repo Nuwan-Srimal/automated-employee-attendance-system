@@ -841,6 +841,15 @@
     </Style>
 
 
+    <!-- Device Card Container -->
+    <Style x:Key="DeviceCardStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
+        <Setter Property="Background" Value="#1E1E1E"/>
+        <Setter Property="BorderBrush" Value="#2D2D2D"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
 
 
 
@@ -848,7 +857,6 @@
 
 
 
-   
 
 
 

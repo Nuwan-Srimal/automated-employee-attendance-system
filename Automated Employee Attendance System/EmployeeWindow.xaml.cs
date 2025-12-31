@@ -40,7 +40,7 @@ namespace Automated_Employee_Attendance_System
 
         private async Task InitializeESP()
         {
-            await _espServices.DetectESP();
+            await _espServices.ConnectToSavedDevice();
             await LoadEmployees();
         }
 
@@ -85,35 +85,50 @@ namespace Automated_Employee_Attendance_System
 
             try
             {
-                var res = await client.GetAsync($"{espBaseUrl}/scanFingerprint");
-
-                if (!res.IsSuccessStatusCode)
+                // ✅ FIX: Create separate HttpClient with longer timeout for fingerprint scanning
+                using (var fingerprintClient = new HttpClient())
                 {
-                    CustomMessageBox.Show("Fingerprint enrollment failed");
-                    SystemServices.Log("Fingerprint enrollment failed");
+                    // 30 seconds timeout for fingerprint enrollment (2 scans)
+                    fingerprintClient.Timeout = TimeSpan.FromSeconds(30);
 
-                    // Clear temp data on failure
-                    tempFingerId = null;
-                    return;
+                    SystemServices.Log("Starting fingerprint enrollment...");
+
+                    var res = await fingerprintClient.GetAsync($"{espBaseUrl}/scanFingerprint");
+
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        CustomMessageBox.Show("Fingerprint enrollment failed");
+                        SystemServices.Log("Fingerprint enrollment failed");
+
+                        // Clear temp data on failure
+                        tempFingerId = null;
+                        return;
+                    }
+
+                    var json = await res.Content.ReadAsStringAsync();
+                    using var doc = JsonDocument.Parse(json);
+
+                    // Check if finger_id was returned
+                    if (doc.RootElement.TryGetProperty("finger_id", out JsonElement fingerIdElement))
+                    {
+                        tempFingerId = fingerIdElement.GetInt32();
+
+                        CustomMessageBox.Show($"Fingerprint enrolled successfully!\nFinger ID: {tempFingerId}\n\nNow click 'Add Employee' to save.");
+                        SystemServices.Log($"Fingerprint enrolled with ID: {tempFingerId}");
+                    }
+                    else
+                    {
+                        tempFingerId = null;
+                        CustomMessageBox.Show("Invalid response from ESP - no finger_id returned");
+                        SystemServices.Log($"ESP Response: {json}");
+                    }
                 }
-
-                var json = await res.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
-
-                // Check if finger_id was returned
-                if (doc.RootElement.TryGetProperty("finger_id", out JsonElement fingerIdElement))
-                {
-                    tempFingerId = fingerIdElement.GetInt32();
-
-                    CustomMessageBox.Show($"Fingerprint enrolled successfully!\nFinger ID: {tempFingerId}\n\nNow click 'Add Employee' to save.");
-                    SystemServices.Log($"Fingerprint enrolled with ID: {tempFingerId}");
-                }
-                else
-                {
-                    tempFingerId = null;
-                    CustomMessageBox.Show("Invalid response from ESP - no finger_id returned");
-                    SystemServices.Log($"ESP Response: {json}");
-                }
+            }
+            catch (TaskCanceledException)
+            {
+                tempFingerId = null;
+                CustomMessageBox.Show("Fingerprint scan timeout!\n\nPlease ensure:\n- Finger is placed on sensor\n- Sensor is working properly\n- ESP is responding");
+                SystemServices.Log("Fingerprint scan timeout");
             }
             catch (Exception ex)
             {
@@ -211,7 +226,7 @@ namespace Automated_Employee_Attendance_System
 
             try
             {
-                var json = JsonSerializer.Serialize(new { id = emp.id.Trim() });
+                var json = JsonSerializer.Serialize(new { id = emp.emp_id.Trim() });
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var res = await client.PostAsync($"{espBaseUrl}/deleteEmployee", content);
@@ -230,7 +245,7 @@ namespace Automated_Employee_Attendance_System
                 if (status == "ok")
                 {
                     CustomMessageBox.Show($"Employee deleted successfully\n\nName: {emp.name}");
-                    SystemServices.Log($"Deleted employee: {emp.name} (ID: {emp.id})");
+                    SystemServices.Log($"Deleted employee: {emp.name} (ID: {emp.emp_id})");
                     await LoadEmployees();
                 }
                 else
