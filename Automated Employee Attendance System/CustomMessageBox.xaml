@@ -7,7 +7,7 @@
         Background="Transparent"
         Width="420"
         Foreground="{DynamicResource Forground}"
-        Height="220"
+        Height="auto"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False">
     <Window.Effect>
