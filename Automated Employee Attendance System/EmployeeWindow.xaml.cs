@@ -19,11 +19,12 @@ namespace Automated_Employee_Attendance_System
     {
         private TextBlock Status;
         private int? tempFingerId = null; // Store finger ID from scan
-
         private ESP_Services _espServices;
         HttpClient client => _espServices.client;
         string espBaseUrl => _espServices.espBaseUrl;
         public Action<string>? OnStatusChanged;
+
+
 
         public EmployeeWindow()
         {
@@ -60,10 +61,7 @@ namespace Automated_Employee_Attendance_System
             });
         }
 
-        /// <summary>
-        /// STEP 1: Scan fingerprint FIRST (enrollment mode)
-        /// This stores the fingerprint in AS608 and returns finger_id
-        /// </summary>
+
         private async void ScanFingerprint_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(espBaseUrl))
@@ -138,10 +136,7 @@ namespace Automated_Employee_Attendance_System
             }
         }
 
-        /// <summary>
-        /// STEP 2: Add employee ONLY if fingerprint scan was successful
-        /// This saves employee data + finger_id to SD card
-        /// </summary>
+
         private async void AddEmployee_Click(object sender, RoutedEventArgs e)
         {
             // Validate fingerprint was scanned first
@@ -203,9 +198,7 @@ namespace Automated_Employee_Attendance_System
             }
         }
 
-        /// <summary>
-        /// Delete employee from SD card and fingerprint from sensor
-        /// </summary>
+
         private async void DeleteEmployee_Click(object sender, RoutedEventArgs e)
         {
             var emp = (sender as Button)?.CommandParameter as Employee;
@@ -261,9 +254,7 @@ namespace Automated_Employee_Attendance_System
             }
         }
 
-        /// <summary>
-        /// Load all employees from SD card
-        /// </summary>
+
         public async Task LoadEmployees()
         {
             if (string.IsNullOrEmpty(espBaseUrl))
@@ -293,9 +284,7 @@ namespace Automated_Employee_Attendance_System
             }
         }
 
-        /// <summary>
-        /// Only allow numeric input for Employee ID
-        /// </summary>
+
         private void EmpId_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !Regex.IsMatch(e.Text, @"^\d+$");
@@ -320,9 +309,6 @@ namespace Automated_Employee_Attendance_System
                 e.Handled = true;
         }
 
-        /// <summary>
-        /// Cancel registration - clears form and temp fingerprint
-        /// </summary>
         private void CancelRegistration_Click(object sender, RoutedEventArgs e)
         {
             if (tempFingerId != null)

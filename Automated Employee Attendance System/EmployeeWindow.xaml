@@ -70,11 +70,10 @@ RowStyle="{StaticResource DataGridRowStyle}">
 
                     <StackPanel Margin="30">
                         <TextBlock Foreground="{DynamicResource Forground}" Text="Enoll New Employee Fingerprint" 
-VerticalAlignment="Center" 
-HorizontalAlignment="Left" 
-FontSize="25" 
-
-FontWeight="Bold" Margin="0,0,0,10"/>
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" 
+                                FontSize="25"
+                                FontWeight="Bold" Margin="0,0,0,10"/>
 
                         <TextBlock Text="Enter the employee details below and follow the intructions on the scanner interface ti register a new biometric ID" FontSize="12" Foreground="Gray" />
 
@@ -146,18 +145,34 @@ FontWeight="Bold" Margin="0,0,0,10"/>
 
                                             <StackPanel>
                                                 <TextBlock Text="First Name" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
-                                                <TextBox x:Name="EmpName" Style="{DynamicResource TextBoxStyle}" 
-                             
-                           />
+                                                <TextBox x:Name="EmpName" Style="{DynamicResource TextBoxStyle}"/>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
                                                 <TextBlock Text="Last Name" FontSize="12" Foreground="Gray" Margin="0,0,0,4.5"/>
-                                                <TextBox x:Name="EmpNIC" Style="{DynamicResource TextBoxStyle}" 
-                         
-                            />
+                                                <TextBox x:Name="EmpNIC" Style="{DynamicResource TextBoxStyle}"/>
                                             </StackPanel>
                                         </Grid>
+
+                                        <!-- Row 2 -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="15"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock Text="Email" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
+                                                <TextBox x:Name="Email" Style="{DynamicResource TextBoxStyle}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2">
+                                                <TextBlock Text="Contact No" FontSize="12" Foreground="Gray" Margin="0,0,0,4.5"/>
+                                                <TextBox x:Name="Cno" Style="{DynamicResource TextBoxStyle}"/>
+                                            </StackPanel>
+                                        </Grid>
+
 
                                     </StackPanel>
                                 </Border>

@@ -124,70 +124,29 @@
                  Margin="6,0,0,12"/>
 
                         <!-- TABLE -->
-                        <DataGrid x:Name="AttendanceGrid"
-                AutoGenerateColumns="False"
-                HeadersVisibility="Column"
-                CanUserAddRows="False"
-                CanUserResizeRows="False"
-                GridLinesVisibility="None"
-                RowHeight="54"
-                FontSize="13"
-                Background="Transparent"
-                BorderThickness="0"
-                AlternationCount="2">
-
-                            <!-- Header -->
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Foreground" Value="Gray"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="BorderBrush" Value="{DynamicResource Forground}"/>
-                                    <Setter Property="BorderThickness" Value="0,1,0,1"/>
-                                    <Setter Property="Padding" Value="10,8"/>
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
-
-                            <!-- Row -->
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="BorderBrush" Value="#1FFFFFFF"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                </Style>
-                            </DataGrid.RowStyle>
-
-                            <!-- Cell -->
-                            <DataGrid.CellStyle>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Padding" Value="12,8"/>
-                                    <Setter Property="Foreground"
-                          Value="{DynamicResource Forground}"/>
-                                </Style>
-                            </DataGrid.CellStyle>
-
-                            <!-- Columns -->
+                        <DataGrid x:Name="EmployeeGrid"
+Background="Transparent"
+RowBackground="White"
+AlternatingRowBackground="#f0f0f0"
+SnapsToDevicePixels="True"
+AutoGenerateColumns="False"
+ItemsSource="{Binding UpcomingBirthdays}"
+CanUserResizeColumns="False"
+ScrollViewer.CanContentScroll="True"
+ScrollViewer.VerticalScrollBarVisibility="Hidden"
+Height="auto"
+CellStyle="{StaticResource DataGridCellStyle}"
+Style="{StaticResource DataGridStyle}"
+ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+RowStyle="{StaticResource DataGridRowStyle}">
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding emp_id}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                                <DataGridTextColumn Header="Employee Name" Binding="{Binding name}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                                <DataGridTextColumn Header="Check In" Binding="{Binding name}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                                <DataGridTextColumn Header="Check Out" Binding="{Binding name}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                               
 
-                                <DataGridTextColumn Header="EMPLOYEE"
-                                  Binding="{Binding EmployeeName}"
-                                  Width="230"/>
-
-                                <DataGridTextColumn Header="ID"
-                                  Binding="{Binding EmployeeId}"
-                                  Width="90"/>
-
-                                <DataGridTextColumn Header="DEPARTMENT"
-                                  Binding="{Binding Department}"
-                                  Width="160"/>
-
-                                <DataGridTextColumn Header="CHECK-IN"
-                                  Binding="{Binding CheckIn}"
-                                  Width="120"/>
-
-                                <DataGridTextColumn Header="CHECK-OUT"
-                                  Binding="{Binding CheckOut}"
-                                  Width="110"/>
+                                
 
                             </DataGrid.Columns>
                         </DataGrid>

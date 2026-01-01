@@ -743,16 +743,69 @@
 
 
     <Style x:Key="LeftNavigation" TargetType="Button">
-        <Setter Property="Background" Value="#FF1469FF"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Background" Value="#0660FE"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Template">
 
+
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+             BorderThickness="0"
+             CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Change background and cursor on mouse hover -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FF1469FF"/>
+
+                <!-- Use a custom cursor -->
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="RightNavigation" TargetType="Button">
-        <Setter Property="Background" Value="#FF1469FF"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Background" Value="#0660FE"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Template">
+
+
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+             BorderThickness="0"
+             CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Change background and cursor on mouse hover -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FF1469FF"/>
+
+                <!-- Use a custom cursor -->
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="MonthText" TargetType="TextBlock">
