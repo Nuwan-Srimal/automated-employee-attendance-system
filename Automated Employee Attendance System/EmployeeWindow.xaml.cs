@@ -70,10 +70,10 @@ namespace Automated_Employee_Attendance_System
                 return;
             }
 
-            // Validate employee data before scanning
             if (string.IsNullOrWhiteSpace(EmpId.Text) ||
-                string.IsNullOrWhiteSpace(EmpName.Text) ||
-                string.IsNullOrWhiteSpace(EmpNIC.Text))
+                 string.IsNullOrWhiteSpace(EmpFirstName.Text) ||
+                 string.IsNullOrWhiteSpace(EmpLastName.Text) ||
+                 string.IsNullOrWhiteSpace(EmpEmail.Text))
             {
                 CustomMessageBox.Show("Please enter Employee ID, Name, and NIC first");
                 return;
@@ -145,15 +145,18 @@ namespace Automated_Employee_Attendance_System
                 CustomMessageBox.Show("Please scan fingerprint first!\n\nFingerprint must be enrolled before saving employee.");
                 return;
             }
-
-            // Validate all fields
             if (string.IsNullOrWhiteSpace(EmpId.Text) ||
-                string.IsNullOrWhiteSpace(EmpName.Text) ||
-                string.IsNullOrWhiteSpace(EmpNIC.Text))
+                string.IsNullOrWhiteSpace(EmpFirstName.Text) ||
+                string.IsNullOrWhiteSpace(EmpLastName.Text) ||
+                string.IsNullOrWhiteSpace(EmpEmail.Text))
             {
-                CustomMessageBox.Show("Please fill all employee fields");
+                CustomMessageBox.Show("Please fill all fields (ID, First Name, Last Name, Email)");
                 return;
             }
+
+
+            string fullName = $"{EmpFirstName.Text.Trim()} {EmpLastName.Text.Trim()}";
+
 
             try
             {
@@ -161,10 +164,11 @@ namespace Automated_Employee_Attendance_System
                 var emp = new
                 {
                     emp_id = EmpId.Text.Trim(),
-                    name = EmpName.Text.Trim(),
-                    nic = EmpNIC.Text.Trim(),
+                    name = fullName,                 // ✅ AUTO SET
+                    email = EmpEmail.Text.Trim(),
                     finger_id = tempFingerId.Value
                 };
+
 
                 var json = JsonSerializer.Serialize(emp);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -184,8 +188,9 @@ namespace Automated_Employee_Attendance_System
 
                 // Clear form and temp data
                 EmpId.Text = "";
-                EmpName.Text = "";
-                EmpNIC.Text = "";
+                EmpFirstName.Text = "";
+                EmpLastName.Text = "";
+                EmpEmail.Text = "";
                 tempFingerId = null;
 
                 // Reload employee list
@@ -323,11 +328,12 @@ namespace Automated_Employee_Attendance_System
                     return;
             }
 
-            // Clear all fields
             EmpId.Text = "";
-            EmpName.Text = "";
-            EmpNIC.Text = "";
+            EmpFirstName.Text = "";
+            EmpLastName.Text = "";
+            EmpEmail.Text = "";
             tempFingerId = null;
+
 
             CustomMessageBox.Show("Registration cancelled");
             SystemServices.Log("Employee registration cancelled");

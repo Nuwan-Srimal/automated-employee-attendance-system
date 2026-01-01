@@ -58,5 +58,29 @@ namespace Automated_Employee_Attendance_System.Properties {
                 this["AppTheme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SavedEmail {
+            get {
+                return ((string)(this["SavedEmail"]));
+            }
+            set {
+                this["SavedEmail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SavedAppPassword {
+            get {
+                return ((string)(this["SavedAppPassword"]));
+            }
+            set {
+                this["SavedAppPassword"] = value;
+            }
+        }
     }
 }

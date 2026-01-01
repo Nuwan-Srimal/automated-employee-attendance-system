@@ -417,6 +417,13 @@ namespace Automated_Employee_Attendance_System
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            EmailBox.Text = Properties.Settings.Default.SavedEmail ?? "";
+            AppPasswordBox.Password = Properties.Settings.Default.SavedAppPassword ?? "";
+
+            SystemServices.Log("Email settings loaded from local settings");
+
+
             switch (ThemeManager.CurrentTheme)
             {
                 case ThemeMode.Light:
@@ -461,5 +468,78 @@ namespace Automated_Employee_Attendance_System
 
             StatusBox.Text = SystemServices.ReadAll();
         }
+
+        private async void SaveEmail_Click(object sender, RoutedEventArgs e)
+        {
+            var device = DeviceService.Load();
+            if (device == null)
+            {
+                CustomMessageBox.Show("No ESP device connected");
+                return;
+            }
+
+            // ✅ Validate inputs
+            if (string.IsNullOrWhiteSpace(EmailBox.Text))
+            {
+                CustomMessageBox.Show("Please enter an email address");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(AppPasswordBox.Password))
+            {
+                CustomMessageBox.Show("Please enter an app password");
+                return;
+            }
+
+            var email = EmailBox.Text.Trim();
+            var password = AppPasswordBox.Password.Trim();
+
+            // ================== 🔹 SAVE TO PC SETTINGS ==================
+            Properties.Settings.Default.SavedEmail = email;
+            Properties.Settings.Default.SavedAppPassword = password;
+            Properties.Settings.Default.Save();
+
+            SystemServices.Log("Email config saved to local settings");
+
+            // ================== 🔹 SEND TO ESP ==================
+            var data = new
+            {
+                email = email,
+                app_password = password
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromSeconds(10);
+
+                    var res = await client.PostAsync($"{device.IpAddress}/setEmailConfig", content);
+
+                    if (res.IsSuccessStatusCode)
+                    {
+                        CustomMessageBox.Show("Email settings saved successfully!");
+                        SystemServices.Log($"Email config saved to ESP: {email}");
+                    }
+                    else
+                    {
+                        var errorBody = await res.Content.ReadAsStringAsync();
+                        CustomMessageBox.Show($"Failed to save email settings.\n\nStatus: {res.StatusCode}\nError: {errorBody}");
+                        SystemServices.Log($"Email config save failed: {res.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show($"Connection error:\n\n{ex.Message}");
+                SystemServices.Log($"Email config error: {ex.Message}");
+            }
+        }
+
+
+
     }
 }

@@ -146,7 +146,8 @@
                         <StackPanel>
 
                             <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="5">
-                                <ListBox x:Name="DeviceList" Margin="10" Height="auto" Background="{x:Null}" BorderBrush="{x:Null}" />
+                                <ListBox x:Name="DeviceList" Margin="10" Background="{x:Null}" BorderBrush="{x:Null}" 
+         ItemContainerStyle="{DynamicResource ListboxStyle}" />
 
                             </Border>
 
@@ -157,6 +158,42 @@
                         </StackPanel>
                         <!-- <Button Click="SyncTime_Click" Width="100" Style="{DynamicResource ActionButton}" Content="Time Sync" /> -->
                     </StackPanel>
+                </Border>
+
+                <Border Background="{DynamicResource Background}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="20" CornerRadius="12" >
+
+                    <StackPanel Margin="20">
+
+                        <TextBlock Text="Email Service"
+ FontSize="16"
+ Foreground="{DynamicResource Forground}"
+ FontWeight="Medium"
+ Margin="0,0,0,10"/>
+
+                        <StackPanel>
+                            <TextBlock Text="Email:"/>
+                            <TextBox x:Name="EmailBox" Style="{DynamicResource TextBoxStyle}" Height="35" Margin="0,0,0,10"/>
+                            <TextBlock Text="Password:"/>
+                            <PasswordBox x:Name="AppPasswordBox"  Margin="0,0,0,10"/>
+                        </StackPanel>
+
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <Button Content="Save"  Click="SaveEmail_Click" Width="100" Margin="5" Style="{DynamicResource ActionButton}" />
+                            <Button Content="Edit" Margin="5" Style="{DynamicResource NavigationButtonStyle}" />
+                        </StackPanel>
+                       
+
+
+
+
+
+
+
+                    </StackPanel>
+
+
+
+
                 </Border>
 
                 <Border Background="{DynamicResource Background}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="20" CornerRadius="12">

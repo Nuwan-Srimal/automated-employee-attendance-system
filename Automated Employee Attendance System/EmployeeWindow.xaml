@@ -40,7 +40,7 @@ RowStyle="{StaticResource DataGridRowStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding emp_id}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
                             <DataGridTextColumn Header="Employee Name" Binding="{Binding name}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
-                            <DataGridTextColumn Header="NIC" Binding="{Binding nic}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
+                            <DataGridTextColumn Header="Email" Binding="{Binding email}" Width="*" ElementStyle="{DynamicResource DataGridColumnsStyle}" />
 
 
                             <DataGridTemplateColumn Header="Action" Width="100">
@@ -145,12 +145,12 @@ RowStyle="{StaticResource DataGridRowStyle}">
 
                                             <StackPanel>
                                                 <TextBlock Text="First Name" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
-                                                <TextBox x:Name="EmpName" Style="{DynamicResource TextBoxStyle}"/>
+                                                <TextBox x:Name="EmpFirstName" Style="{DynamicResource TextBoxStyle}"/>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
                                                 <TextBlock Text="Last Name" FontSize="12" Foreground="Gray" Margin="0,0,0,4.5"/>
-                                                <TextBox x:Name="EmpNIC" Style="{DynamicResource TextBoxStyle}"/>
+                                                <TextBox x:Name="EmpLastName" Style="{DynamicResource TextBoxStyle}"/>
                                             </StackPanel>
                                         </Grid>
 
@@ -158,19 +158,15 @@ RowStyle="{StaticResource DataGridRowStyle}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition/>
-                                                <ColumnDefinition Width="15"/>
-                                                <ColumnDefinition/>
+                                           
+                                               
                                             </Grid.ColumnDefinitions>
 
                                             <StackPanel>
-                                                <TextBlock Text="Email" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
-                                                <TextBox x:Name="Email" Style="{DynamicResource TextBoxStyle}"/>
+                                                <TextBlock Text="Email" FontSize="12" Foreground="Gray" Margin="0,5,0,5"/>
+                                                <TextBox x:Name="EmpEmail" Style="{DynamicResource TextBoxStyle}"/>
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="2">
-                                                <TextBlock Text="Contact No" FontSize="12" Foreground="Gray" Margin="0,0,0,4.5"/>
-                                                <TextBox x:Name="Cno" Style="{DynamicResource TextBoxStyle}"/>
-                                            </StackPanel>
                                         </Grid>
 
 
