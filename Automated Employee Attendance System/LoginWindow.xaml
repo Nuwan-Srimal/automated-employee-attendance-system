@@ -8,6 +8,7 @@
         RenderOptions.BitmapScalingMode="HighQuality"
         Foreground="{DynamicResource Forground}"
         AllowsTransparency="True"
+        FontFamily="{StaticResource CustomFont}"
         WindowStyle="None"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"

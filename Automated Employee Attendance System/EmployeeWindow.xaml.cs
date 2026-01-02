@@ -231,35 +231,50 @@ namespace Automated_Employee_Attendance_System
 
             try
             {
-                // ✅ DELETE FROM ESP (if connected)
+                bool deletedFromESP = false;
+
+                // ✅ DELETE FROM ESP (only if connected)
                 if (!string.IsNullOrEmpty(espBaseUrl))
                 {
-                    var json = JsonSerializer.Serialize(new { id = emp.emp_id.Trim() });
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var res = await client.PostAsync($"{espBaseUrl}/deleteEmployee", content);
-                    var body = await res.Content.ReadAsStringAsync();
-
-                    if (res.IsSuccessStatusCode)
+                    try
                     {
-                        using var doc = JsonDocument.Parse(body);
-                        var status = doc.RootElement.GetProperty("status").GetString();
+                        var json = JsonSerializer.Serialize(new { id = emp.emp_id.Trim() });
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        if (status == "ok")
+                        var res = await client.PostAsync($"{espBaseUrl}/deleteEmployee", content);
+                        var body = await res.Content.ReadAsStringAsync();
+
+                        if (res.IsSuccessStatusCode)
                         {
-                            SystemServices.Log($"Employee deleted from ESP: {emp.name}");
+                            using var doc = JsonDocument.Parse(body);
+                            var status = doc.RootElement.GetProperty("status").GetString();
+
+                            if (status == "ok")
+                            {
+                                deletedFromESP = true;
+                                SystemServices.Log($"Employee deleted from ESP: {emp.name}");
+                            }
+                        }
+                        else
+                        {
+                            SystemServices.Log($"ESP delete failed (continuing with database): {body}");
                         }
                     }
-                    else
+                    catch (Exception espEx)
                     {
-                        SystemServices.Log($"ESP delete failed (continuing with database): {body}");
+                        SystemServices.Log($"ESP delete error (continuing with database): {espEx.Message}");
                     }
                 }
 
                 // ✅ DELETE FROM DATABASE
                 DatabaseService.DeleteEmployee(emp.emp_id);
 
-                CustomMessageBox.Show($"Employee deleted successfully\n\nName: {emp.name}\n\n✓ Removed from database\n✓ Removed from ESP");
+                // Show appropriate success message based on ESP connection
+                string message = deletedFromESP 
+                    ? $"Employee deleted successfully\n\nName: {emp.name}\n\n✓ Removed from database\n✓ Removed from ESP"
+                    : $"Employee deleted from database\n\nName: {emp.name}\n\n✓ Removed from database\n⚠ ESP not connected - fingerprint remains on sensor";
+
+                CustomMessageBox.Show(message);
 
                 await LoadEmployees();
             }

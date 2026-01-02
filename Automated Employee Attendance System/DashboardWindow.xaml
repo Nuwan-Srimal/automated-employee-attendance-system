@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              Height="Auto" Width="Auto"
+             FontFamily="{StaticResource CustomFont}"
              Foreground="{DynamicResource Forground}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -19,7 +20,7 @@
             </StackPanel>
 
             <!-- Cards -->
-            <UniformGrid Columns="4" Margin="0,0,0,20">
+            <UniformGrid Columns="3" Margin="0,0,0,20">
 
                 <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}"
                         CornerRadius="12"
@@ -27,7 +28,7 @@
                         Margin="6">
                     <StackPanel>
                         <TextBlock Text="Total Employees" Foreground="Gray"/>
-                        <TextBlock Text="142" FontSize="26" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding TotalEmployees}" FontSize="26" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
 
@@ -37,7 +38,7 @@
         Margin="6">
                     <StackPanel>
                         <TextBlock Text="Present Today" Foreground="Gray"/>
-                        <TextBlock Text="120" FontSize="26" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding PresentToday}" FontSize="26" FontWeight="Bold" Foreground="LimeGreen"/>
                     </StackPanel>
                 </Border>
 
@@ -47,17 +48,7 @@
         Margin="6">
                     <StackPanel>
                         <TextBlock Text="Absent Today" Foreground="Gray"/>
-                        <TextBlock Text="12" FontSize="26" FontWeight="Bold"/>
-                    </StackPanel>
-                </Border>
-
-                <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}"
-        CornerRadius="12"
-        Padding="16"
-        Margin="6">
-                    <StackPanel>
-                        <TextBlock Text="Late Arrivals" Foreground="Gray"/>
-                        <TextBlock Text="10" FontSize="26" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding AbsentToday}" FontSize="26" FontWeight="Bold" Foreground="OrangeRed"/>
                     </StackPanel>
                 </Border>
 
@@ -82,7 +73,7 @@
             Margin="0,0,16,0">
 
                     <StackPanel>
-                        <TextBlock Text="Attendance Overview"
+                        <TextBlock Text="Attendance Overview (Last 7 Days)"
                        FontSize="16"
                        FontWeight="SemiBold"
                        Margin="0,0,0,12"/>

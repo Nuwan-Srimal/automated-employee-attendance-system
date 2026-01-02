@@ -4,6 +4,7 @@
         Title="ESP WiFi Setup" 
         Height="450" 
         Width="500"
+		FontFamily="{StaticResource CustomFont}"
 		
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"

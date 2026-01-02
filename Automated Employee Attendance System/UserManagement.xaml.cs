@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Automated_Employee_Attendance_System
 {
     /// <summary>
-    /// Interaction logic for ReportView.xaml
+    /// Interaction logic for UserManagement.xaml
     /// </summary>
-    public partial class ReportView : UserControl
+    public partial class UserManagement : UserControl
     {
-        public ReportView()
+        public UserManagement()
         {
             InitializeComponent();
         }

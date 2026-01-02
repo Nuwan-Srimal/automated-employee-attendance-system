@@ -6,6 +6,7 @@
              xmlns:cal="clr-namespace:ModernCalendarLib;assembly=ModernCalendarLib"
              xmlns:local="clr-namespace:Automated_Employee_Attendance_System"
              mc:Ignorable="d" 
+             FontFamily="{StaticResource CustomFont}"
              d:DesignWidth="800">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Hidden">
@@ -25,7 +26,7 @@
                 </StackPanel>
 
                 <!-- Cards -->
-                <UniformGrid Columns="4" Margin="0,0,0,20">
+                <UniformGrid Columns="3" Margin="0,0,0,20">
 
                     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}"
                   CornerRadius="12"
@@ -33,7 +34,7 @@
                   Margin="6">
                         <StackPanel>
                             <TextBlock Text="Total Employees" Foreground="Gray"/>
-                            <TextBlock Text="142" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
+                            <TextBlock Text="{Binding TotalEmployees}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
                         </StackPanel>
                     </Border>
 
@@ -43,7 +44,7 @@
   Margin="6">
                         <StackPanel>
                             <TextBlock Text="Present Today" Foreground="Gray"/>
-                            <TextBlock Text="120" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
+                            <TextBlock Text="{Binding PresentToday}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
                         </StackPanel>
                     </Border>
 
@@ -53,65 +54,102 @@
   Margin="6">
                         <StackPanel>
                             <TextBlock Text="Absent Today" Foreground="Gray"/>
-                            <TextBlock Text="12" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}"
-  CornerRadius="12"
-  Padding="16"
-  Margin="6">
-                        <StackPanel>
-                            <TextBlock Text="Late Arrivals" Foreground="Gray"/>
-                            <TextBlock Text="10" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
+                            <TextBlock Text="{Binding AbsentToday}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Forground}"/>
                         </StackPanel>
                     </Border>
 
                 </UniformGrid>
-                <Border Background="{DynamicResource Background}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-                  Margin="5,0,0,20"
-                  CornerRadius="12">
-                    <Grid Margin="0,20,0,10">
 
-                        <!-- Select Date -->
-                        <StackPanel Grid.Column="0" Margin="10,0,15,0">
-                            <TextBlock Text="Select Date"
-                 Foreground="{DynamicResource Forground}"
-                 FontSize="12"
-                                 HorizontalAlignment="Left"
-                 Margin="0,0,0,8"/>
-                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2" HorizontalAlignment="Left" CornerRadius="5">
-                                <cal:CustomDatePicker x:Name="StartDatePicker"  Width="250"/>
-                            </Border>
-                        </StackPanel>
 
-                        <!-- Filter Department -->
+
+
+
+                <Border Background="{DynamicResource Background}"
+        BorderBrush="{DynamicResource BorderBrush}"
+        BorderThickness="1"
+        Margin="5,0,0,20"
+        CornerRadius="12"
+        Padding="15">
+                    <Grid>
+                        <!-- Columns -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- LEFT SIDE -->
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Filter Department"
-                 Foreground="{DynamicResource Forground}"
-                                 HorizontalAlignment="Center"
-                 FontSize="12"
-                 Margin="114,0,0,8"/>
-                            <ComboBox Style="{DynamicResource ComboBoxFlatStyle}" Width="280"
-                               
-                                HorizontalAlignment="Center" Margin="300,0,0,0">
-                                <ComboBoxItem Content="All Departments"/>
-                                <ComboBoxItem Content="Engineering"/>
-                                <ComboBoxItem Content="HR"/>
-                            </ComboBox>
+                            <!-- Dates -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <StackPanel Orientation="Vertical" Margin="0,0,15,0">
+                                    <TextBlock Text="Start Date"
+                               Foreground="{DynamicResource Forground}"
+                               FontSize="12"
+                               Margin="0,0,0,8"/>
+                                    <Border BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="5">
+                                        <cal:CustomDatePicker x:Name="StartDatePicker" 
+                                                              Width="250"
+                                                              />
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="End Date"
+                               Foreground="{DynamicResource Forground}"
+                               FontSize="12"
+                               Margin="0,0,0,8"/>
+                                    <Border BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="5">
+                                        <cal:CustomDatePicker x:Name="EndDatePicker" 
+                                                              Width="250"
+                                                              />
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Search and Buttons -->
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBox x:Name="TxtSearch"
+                         Height="35"
+                         Width="300"
+                         Style="{DynamicResource OutsourceSerchBar}"
+                         TextChanged="TxtSearch_TextChanged"
+                         VerticalContentAlignment="Center"
+                         Margin="0,0,10,0"/>
+
+                                <Button Content="🔍 Search"
+                        Click="SearchAttendance_Click"
+                        Style="{StaticResource ActionButton}"
+                        Width="120"
+                        Height="35"
+                        Margin="0,0,10,0"/>
+
+                                <Button Content="🧹 Clear Filters"
+                        Click="ClearFilters_Click"
+                        Style="{StaticResource ActionButton}"
+                        Width="120"
+                        Height="35"/>
+                            </StackPanel>
                         </StackPanel>
 
-                        <!-- Refresh Button -->
-                        <StackPanel Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,20,0">
-                            <Button Content="🔄 Refresh" 
-                                    Click="RefreshAttendance_Click"
-                                    Style="{StaticResource ActionButton}"
-                                    Width="120"
-                                    Height="35"/>
+                        <!-- RIGHT SIDE -->
+                        <StackPanel Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Margin="20,0,0,0">
+                            <Button Content="🔄 Refresh"
+                    Click="RefreshAttendance_Click"
+                    Style="{StaticResource ActionButton}"
+                    Width="120"
+                    Height="35"/>
                         </StackPanel>
                     </Grid>
-
                 </Border>
+
+
+
+
                 <!-- ================= ATTENDANCE BOARD ================= -->
                 <Border Margin="5,20,0,0"
                   Height="360"

@@ -26,6 +26,7 @@
     <None Remove="UI\logo.png" />
     <None Remove="UI\Report.png" />
     <None Remove="UI\ReportS.png" />
+    <None Remove="UI\searcht.png" />
     <None Remove="UI\Settings.png" />
     <None Remove="UI\SettingsS.png" />
     <None Remove="UI\time_tracker.gif" />
@@ -70,6 +71,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UI\ReportS.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UI\searcht.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UI\Settings.png">

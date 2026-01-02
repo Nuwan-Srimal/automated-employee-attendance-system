@@ -564,7 +564,7 @@
                         </Border>
 
                         <!-- Search Icon -->
-                        <Image RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True" Source="/Assets/searcht.png" Width="23" HorizontalAlignment="Left" Margin="10"/>
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True" Source="/UI/searcht.png" Width="23" HorizontalAlignment="Left" Margin="10"/>
                     </Grid>
 
                     <!-- Triggers -->
@@ -591,11 +591,11 @@
 
 
     <Style TargetType="TabControl" x:Key="TabControl">
-       
+
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Margin" Value="0"/>
-        
-        
+
+
         <Setter Property="Foreground" Value="#ccc"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Template">
@@ -623,15 +623,15 @@
     <Style TargetType="TabItem" x:Key="TabItem">
         <Setter Property="Foreground" Value="#ccc"/>
         <Setter Property="Background" Value="Transparent"/>
-        
 
-        <Setter Property="Height" Value="auto"/>
-        <Setter Property="Width" Value="auto"/>
+
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="Width" Value="100"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
                     <Border x:Name="Bd"
-                            Margin="0"
+                            Margin="5"
                         CornerRadius="5"
                             Cursor="Hand"
                         Background="{TemplateBinding Background}"
@@ -649,14 +649,14 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="#0660FE"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#FF1469FF"/>
+                            <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
                             <Setter Property="Foreground" Value="{DynamicResource Forground}"/>
                         </Trigger>
-                        
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

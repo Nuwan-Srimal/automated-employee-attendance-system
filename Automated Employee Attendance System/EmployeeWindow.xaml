@@ -8,7 +8,7 @@
       xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
       mc:Ignorable="d" 
              RenderOptions.BitmapScalingMode="HighQuality"
-             FontFamily="Microsoft Sans Serif"
+             FontFamily="{StaticResource CustomFont}"
              SnapsToDevicePixels="True"
      
      d:DesignWidth="800"
@@ -63,7 +63,7 @@ RowStyle="{StaticResource DataGridRowStyle}">
             </TabItem>
 
 
-            <TabItem Width="auto"  Style="{DynamicResource TabItem}" Header="  >  Enroll Fingerprint">
+            <TabItem Width="150"  Style="{DynamicResource TabItem}" Header="Register Employee">
 
                 <StackPanel>
 

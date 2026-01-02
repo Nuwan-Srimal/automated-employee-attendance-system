@@ -4,6 +4,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
+        FontFamily="{StaticResource CustomFont}"
         Background="Transparent"
         Width="420"
         MinHeight="100"
