@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Automated_Employee_Attendance_System"
              mc:Ignorable="d" 
+             FontFamily="{StaticResource CustomFont}"
              RenderOptions.BitmapScalingMode="HighQuality"
-             FontFamily="Microsoft Sans Serif"
+             
              SnapsToDevicePixels="True"
              d:DesignWidth="800">
     <Grid>
@@ -40,6 +41,7 @@
                        FontWeight="Medium"/>
                             <TextBlock Text="Customize how the admin portal looks on your device."
                        FontSize="12"
+                                       FontWeight="Medium"
                        Foreground="Gray"/>
                         </StackPanel>
 
@@ -138,14 +140,14 @@
                 <Border Background="{DynamicResource Background}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="20" CornerRadius="12" >
                     <StackPanel Margin="20">
                         <TextBlock Text="Device Management"
-                       FontSize="16"
+                       FontSize="16" FontWeight="Medium"
                            Foreground="{DynamicResource Forground}"
-                       FontWeight="Medium"
+                       
                        Margin="0,0,0,10"/>
 
                         <StackPanel>
 
-                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="5">
+                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="2" CornerRadius="5">
                                 <ListBox x:Name="DeviceList" Margin="10" Background="{x:Null}" BorderBrush="{x:Null}" 
          ItemContainerStyle="{DynamicResource ListboxStyle}" />
 
@@ -171,15 +173,15 @@
  Margin="0,0,0,10"/>
 
                         <StackPanel>
-                            <TextBlock Text="Email:"/>
-                            <TextBox x:Name="EmailBox" Style="{DynamicResource TextBoxStyle}" Height="35" Margin="0,0,0,10"/>
-                            <TextBlock Text="Password:"/>
+                            <TextBlock Foreground="{DynamicResource Forground}" FontWeight="SemiBold" Text="Email:" Padding="0,3,0,3"  />
+                            <TextBox x:Name="EmailBox"  Style="{DynamicResource TextBoxStyle}" Height="35" Margin="0,0,0,10"/>
+                            <TextBlock Text="Password:" FontWeight="SemiBold"  Padding="0,0,0,3"/>
                             <PasswordBox x:Name="AppPasswordBox"  Margin="0,0,0,10"/>
                         </StackPanel>
 
                         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                             <Button Content="Save"  Click="SaveEmail_Click" Width="100" Margin="5" Style="{DynamicResource ActionButton}" />
-                            <Button Content="Edit" Margin="5" Style="{DynamicResource NavigationButtonStyle}" />
+                            <Button Content="Edit" Margin="5" Width="100" Style="{DynamicResource NavigationButtonStyle}" />
                         </StackPanel>
                        
 
@@ -203,7 +205,7 @@
                  FontWeight="Medium"
                             Foreground="{DynamicResource Forground}"
                  Margin="0,0,0,10" Text="System Status"/>
-                        <TextBox Style="{DynamicResource TextBoxStyle}" x:Name="StatusBox" Height="150" IsReadOnly="True"
+                        <TextBox Style="{DynamicResource TextBoxStyle}"  x:Name="StatusBox" Height="150" IsReadOnly="True"
          TextWrapping="Wrap"
          VerticalScrollBarVisibility="Hidden" FontSize="12" Foreground="Gray" />
                     </StackPanel>

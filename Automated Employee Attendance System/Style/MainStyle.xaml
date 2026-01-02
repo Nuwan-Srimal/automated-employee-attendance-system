@@ -11,6 +11,8 @@
     <SolidColorBrush x:Key="Forground" Color="Black"/>
     <SolidColorBrush x:Key="DataGridBackground" Color="Transparent"/>
 
+    <FontFamily x:Key="CustomFont">./Poppins#Poppins</FontFamily>
+    
     <SolidColorBrush x:Key="SystemGridForground" Color="Black"/>
     <SolidColorBrush x:Key="IsMouseOver" Color="#1a1a1a"/>
     <SolidColorBrush x:Key="ThemeBackground" Color="#1a1a1a"/>
@@ -447,7 +449,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="5"
-                                Height="35"
+                                Height="auto"
                                 Padding="{TemplateBinding Padding}">
                             <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>

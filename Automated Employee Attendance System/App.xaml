@@ -8,6 +8,8 @@
 
         <ResourceDictionary>
 
+            <FontFamily x:Key="CustomFont">pack://application:,,,/Fonts/Poppins#Poppins</FontFamily>
+            
             <ResourceDictionary.MergedDictionaries>
 
                 <ResourceDictionary Source="/Style/MainStyle.xaml" />
