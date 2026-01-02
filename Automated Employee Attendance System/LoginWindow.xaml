@@ -120,7 +120,8 @@
            
                                 Click="Login_Click"
              Style="{DynamicResource ActionButton}"
-                                Width="150">
+                                Width="150"
+                                IsDefault="True">
 
                         </Button>
 
