@@ -64,7 +64,7 @@
             </UniformGrid>
 
             <!-- System Status -->
-            <Border CornerRadius="10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}" Padding="16">
+            <Border CornerRadius="10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource Background}" Padding="16" Margin="6,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Ellipse Width="10" Height="10" Fill="#35D499"/>
                     <TextBlock Text="  System Online (Arduino Connected)"
@@ -72,49 +72,93 @@
                 </StackPanel>
             </Border>
 
-            <!-- Attendance Trend Chart -->
-            <Border Background="{DynamicResource Background}"
-        CornerRadius="14"
-        Padding="16"
-        Margin="0,24,0,0">
+            <!-- Attendance Overview + System Status -->
+            <Grid Margin="6,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                </Grid.ColumnDefinitions>
 
-                <StackPanel>
-                    <TextBlock Text="Attendance Overview"
-                   FontSize="16"
-                   FontWeight="SemiBold"
-                   Margin="0,0,0,12"/>
+                <!-- LEFT: Attendance Chart -->
+                <Border Grid.Column="0"
+            Background="{DynamicResource Background}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+            CornerRadius="14"
+            Padding="16"
+            Margin="0,0,16,0">
 
-                    <lvc:CartesianChart Series="{Binding AttendanceSeries}"
-                            LegendLocation="None"
-                            Height="220"
-                            Background="{DynamicResource Background}">
+                    <StackPanel>
+                        <TextBlock Text="Attendance Overview"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12"/>
 
-                        <!-- X AXIS -->
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Labels="{Binding Labels}"
-                                      Foreground="Gray"
-                                      LabelsRotation="0">
-                                <lvc:Axis.Separator>
-                                    <lvc:Separator Step="1"/>
-                                </lvc:Axis.Separator>
-                            </lvc:Axis>
-                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart Series="{Binding AttendanceSeries}"
+                                LegendLocation="None"
+                                Height="220"
+                                Background="Transparent">
 
-                        <!-- Y AXIS -->
-                        <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Foreground="Gray"
-                                      MinValue="10"
-                                      MaxValue="100">
-                                <lvc:Axis.Separator>
-                                    <lvc:Separator Step="10"/>
-                                </lvc:Axis.Separator>
-                            </lvc:Axis>
-                        </lvc:CartesianChart.AxisY>
+                            <!-- X AXIS -->
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Labels="{Binding Labels}"
+                              Foreground="#8A8F98">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Step="1"
+                                                       IsEnabled="False"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
 
-                    </lvc:CartesianChart>
+                            <!-- Y AXIS (hidden) -->
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis ShowLabels="True">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
 
-                </StackPanel>
-            </Border>
+                        </lvc:CartesianChart>
+                    </StackPanel>
+                </Border>
+
+                <!-- RIGHT: System Status Card -->
+                <Border Grid.Column="1"
+                        Margin="0,0,0,150"
+            Background="{DynamicResource Background}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+            CornerRadius="14"
+            Padding="16">
+
+                    <StackPanel>
+
+                        <TextBlock Text="System Status"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12"/>
+
+                        <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+
+                            <!-- Status dot -->
+                            <Ellipse Width="10"
+                         Height="10"
+                         Fill="{Binding SystemStatusColor}"
+                         VerticalAlignment="Center"/>
+
+                            <StackPanel Margin="10,0,0,0">
+                                <TextBlock Text="{Binding SystemStatusText}"
+                               FontWeight="SemiBold"/>
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+            </Grid>
+
 
 
         </StackPanel>

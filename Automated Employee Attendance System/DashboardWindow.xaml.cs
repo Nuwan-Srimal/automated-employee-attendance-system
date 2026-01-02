@@ -26,10 +26,18 @@ namespace Automated_Employee_Attendance_System
 
         private SerialPort _serialPort;
         public string[] Labels { get; set; }
+        public string SystemStatusText { get; set; }
+        public string SystemStatusSubText { get; set; }
+        public Brush SystemStatusColor { get; set; }
 
         public DashboardWindow()
         {
             InitializeComponent();
+            SystemStatusText = "No Device Configured";
+            SystemStatusSubText = "Connect Arduino to enable real-time sync";
+            SystemStatusColor = Brushes.Orange;
+
+            DataContext = this;
 
             Labels = new[]
             {
@@ -37,19 +45,21 @@ namespace Automated_Employee_Attendance_System
     };
 
             AttendanceSeries = new SeriesCollection
+{
+    new LineSeries
     {
-        new LineSeries
+        Title = "Attendance",
+        Values = new ChartValues<int>
         {
-            Title = "Present",
-            Values = new ChartValues<int>
-            {
-                15, 20, 30, 35, 50, 20, 15
-            },
-            StrokeThickness = 3,
-            PointGeometrySize = 8,
-            Fill = Brushes.Transparent
-        }
-    };
+            15, 20, 30, 25, 35, 20, 28
+        },
+        StrokeThickness = 3,
+        PointGeometry = null,    
+        LineSmoothness = 1,
+        Stroke = Brushes.DodgerBlue,
+        Fill = new SolidColorBrush(Color.FromArgb(40, 30, 144, 255))
+    }
+};
 
             DataContext = this;
 
