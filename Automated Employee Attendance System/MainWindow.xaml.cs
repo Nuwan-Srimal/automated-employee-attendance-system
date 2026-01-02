@@ -157,26 +157,43 @@ namespace Automated_Employee_Attendance_System
 
         private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
-        private void Maximize_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Normal;
-            }
-            else
-            {
-                // Get the working area (screen minus taskbar)
-                var workingArea = SystemParameters.WorkArea;
+        private bool _isMaximized = false;
+        private double _previousLeft;
+        private double _previousTop;
+        private double _previousWidth;
+        private double _previousHeight;
 
-                // Set window position and size to working area
-                this.Left = workingArea.Left;
-                this.Top = workingArea.Top;
-                this.Width = workingArea.Width;
-                this.Height = workingArea.Height;
+private void Maximize_Click(object sender, RoutedEventArgs e)
+{
+    if (_isMaximized)
+    {
+        // Restore to previous size and position
+        this.Left = _previousLeft;
+        this.Top = _previousTop;
+        this.Width = _previousWidth;
+        this.Height = _previousHeight;
+        _isMaximized = false;
+    }
+    else
+    {
+        // get before maximizing
+        _previousLeft = this.Left;
+        _previousTop = this.Top;
+        _previousWidth = this.Width;
+        _previousHeight = this.Height;
 
-                this.WindowState = WindowState.Normal;
-            }
-        }
+        // Get the working area (screen minus taskbar)
+        var workingArea = SystemParameters.WorkArea;
+
+        // Set window position and size to working area
+        this.Left = workingArea.Left;
+        this.Top = workingArea.Top;
+        this.Width = workingArea.Width;
+        this.Height = workingArea.Height;
+        
+        _isMaximized = true;
+    }
+}
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
