@@ -68,13 +68,14 @@ namespace Automated_Employee_Attendance_System
 
         private void CreateButtons(MessageBoxButton buttons)
         {
-            void Add(string text, MessageBoxResult result)
+            void Add(string text, MessageBoxResult result, bool isDefault = false)
             {
                 var btn = new System.Windows.Controls.Button
                 {
                     Content = text,
                     Width = 90,
-                    Margin = new Thickness(6)
+                    Margin = new Thickness(6),
+                    IsDefault = isDefault  // ✅ Enter key trigger කරන්න
                 };
 
                 // ✅ DynamicResource correctly applied
@@ -95,21 +96,21 @@ namespace Automated_Employee_Attendance_System
             switch (buttons)
             {
                 case MessageBoxButton.OK:
-                    Add("OK", MessageBoxResult.OK);
+                    Add("OK", MessageBoxResult.OK, isDefault: true);
                     break;
 
                 case MessageBoxButton.OKCancel:
-                    Add("OK", MessageBoxResult.OK);
+                    Add("OK", MessageBoxResult.OK, isDefault: true);
                     Add("Cancel", MessageBoxResult.Cancel);
                     break;
 
                 case MessageBoxButton.YesNo:
-                    Add("Yes", MessageBoxResult.Yes);
+                    Add("Yes", MessageBoxResult.Yes, isDefault: true);
                     Add("No", MessageBoxResult.No);
                     break;
 
                 case MessageBoxButton.YesNoCancel:
-                    Add("Yes", MessageBoxResult.Yes);
+                    Add("Yes", MessageBoxResult.Yes, isDefault: true);
                     Add("No", MessageBoxResult.No);
                     Add("Cancel", MessageBoxResult.Cancel);
                     break;
