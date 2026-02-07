@@ -77,8 +77,8 @@ FontWeight="SemiBold"
             <!-- User Details/Edit Panel -->
             <Border Grid.Column="2" Background="{DynamicResource Background}" 
                     CornerRadius="10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="20">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel x:Name="UserDetailsPanel">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="UserDetailsPanel" Margin="0,0,5,0">
                         <TextBlock x:Name="PanelTitle" Text="User Details" 
                                    FontSize="18" FontWeight="SemiBold" 
                                    />

@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Automated_Employee_Attendance_System.Models;
+using Automated_Employee_Attendance_System.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Automated_Employee_Attendance_System.Services;
 using System.Windows;
 using System.Windows.Controls;
-using Automated_Employee_Attendance_System.Models;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
+using System.Windows.Threading;
 using XamlAnimatedGif;
 
 namespace Automated_Employee_Attendance_System
@@ -23,6 +24,9 @@ namespace Automated_Employee_Attendance_System
         HttpClient client => _espServices.client;
         string espBaseUrl => _espServices.espBaseUrl;
         public Action<string>? OnStatusChanged;
+
+        private DispatcherTimer _employeeSyncTimer;
+        private bool _syncRunning = false;
 
 
 
@@ -37,11 +41,93 @@ namespace Automated_Employee_Attendance_System
             Loaded += LoadingWindow_Loaded;
 
             _ = InitializeESP();
+            StartEmployeeSync();
+
+
+
         }
+
+
+        private void StartEmployeeSync()
+        {
+            _employeeSyncTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(1)
+            };
+
+            _employeeSyncTimer.Tick += async (s, e) =>
+            {
+                if (_syncRunning) return;
+                _syncRunning = true;
+
+                await SyncEmployeesESP_SQL();
+
+                _syncRunning = false;
+            };
+
+            _employeeSyncTimer.Start();
+        }
+
+        private async Task SyncEmployeesESP_SQL()
+        {
+            if (string.IsNullOrEmpty(espBaseUrl))
+                return;
+
+            try
+            {
+                var res = await client.GetAsync($"{espBaseUrl}/employees");
+                if (!res.IsSuccessStatusCode)
+                    return;
+
+                var json = await res.Content.ReadAsStringAsync();
+                var espEmployees = JsonSerializer.Deserialize<List<Employee>>(json);
+
+                if (espEmployees == null || espEmployees.Count == 0)
+                {
+                    SystemServices.Log("SYNC SKIPPED: ESP returned empty list");
+                    return;
+                }
+
+                var sqlEmployees = DatabaseService.GetAllEmployees();
+
+                var espById = espEmployees.ToDictionary(e => e.emp_id);
+                var sqlById = sqlEmployees.ToDictionary(e => e.emp_id);
+
+                // ✅ ADD: ESP ➜ SQL
+                foreach (var espEmp in espEmployees)
+                {
+                    if (!sqlById.ContainsKey(espEmp.emp_id))
+                    {
+                        DatabaseService.SaveEmployee(espEmp);
+                        SystemServices.Log($"SYNC ADD: {espEmp.emp_id}");
+                    }
+                }
+
+                // ✅ DELETE: SQL ➜ remove missing
+                foreach (var sqlEmp in sqlEmployees)
+                {
+                    if (!espById.ContainsKey(sqlEmp.emp_id))
+                    {
+                        DatabaseService.DeleteEmployee(sqlEmp.emp_id);
+                        SystemServices.Log($"SYNC DELETE: {sqlEmp.emp_id}");
+                    }
+                }
+
+                await LoadEmployees(); // refresh UI
+            }
+            catch (Exception ex)
+            {
+                SystemServices.Log($"SYNC ERROR: {ex.Message}");
+            }
+        }
+
+
+
 
         private async Task InitializeESP()
         {
             await _espServices.ConnectToSavedDevice();
+            await SyncEmployeesESP_SQL();  // ✅ Sync ESP → Database first
             await LoadEmployees();
         }
 
@@ -194,20 +280,26 @@ namespace Automated_Employee_Attendance_System
                 // ✅ SAVE TO ESP (if connected)
                 if (!string.IsNullOrEmpty(espBaseUrl))
                 {
-                    var json = JsonSerializer.Serialize(employee);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var res = await client.PostAsync($"{espBaseUrl}/addEmployee", content);
-
-                    if (!res.IsSuccessStatusCode)
+                    // ✅ FIX: Use separate HttpClient with longer timeout for ESP save
+                    using (var espClient = new HttpClient())
                     {
-                        var errorBody = await res.Content.ReadAsStringAsync();
-                        CustomMessageBox.Show($"Failed to save employee to ESP\n{errorBody}");
-                        SystemServices.Log($"Employee save to ESP failed: {errorBody}");
-                        return;
-                    }
+                        espClient.Timeout = TimeSpan.FromSeconds(15);
 
-                    SystemServices.Log($"Employee saved to ESP: {employee.name} (ID: {employee.emp_id})");
+                        var json = JsonSerializer.Serialize(employee);
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                        var res = await espClient.PostAsync($"{espBaseUrl}/addEmployee", content);
+
+                        if (!res.IsSuccessStatusCode)
+                        {
+                            var errorBody = await res.Content.ReadAsStringAsync();
+                            CustomMessageBox.Show($"Failed to save employee to ESP\n{errorBody}");
+                            SystemServices.Log($"Employee save to ESP failed: {errorBody}");
+                            return;
+                        }
+
+                        SystemServices.Log($"Employee saved to ESP: {employee.name} (ID: {employee.emp_id})");
+                    }
                 }
 
                 // ✅ SAVE TO DATABASE
@@ -227,6 +319,11 @@ namespace Automated_Employee_Attendance_System
 
                 // Reload employee list
                 await LoadEmployees();
+            }
+            catch (TaskCanceledException)
+            {
+                CustomMessageBox.Show("⏱️ ESP request timed out!\n\nThe employee was NOT saved.\nPlease check the ESP device connection and try again.");
+                SystemServices.Log("Employee save to ESP timed out");
             }
             catch (Exception ex)
             {

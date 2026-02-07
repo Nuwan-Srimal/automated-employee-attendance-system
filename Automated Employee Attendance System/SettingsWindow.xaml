@@ -208,7 +208,7 @@
                  Margin="0,0,0,10" Text="System Status"/>
                         <TextBox Style="{DynamicResource TextBoxStyle}"  x:Name="StatusBox" Height="150" IsReadOnly="True"
          TextWrapping="Wrap"
-         VerticalScrollBarVisibility="Hidden" FontSize="12" Foreground="Gray" />
+         VerticalScrollBarVisibility="Auto" FontSize="12" Foreground="Gray" />
                     </StackPanel>
                 </Border>
 

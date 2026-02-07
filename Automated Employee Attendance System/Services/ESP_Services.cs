@@ -33,7 +33,7 @@ namespace Automated_Employee_Attendance_System.Services
                 return false;
             }
 
-            OnStatusChanged?.Invoke($"Connecting to {currentDevice.IpAddress}...");
+          
             SystemServices.Log($"Connecting to saved device: {currentDevice.IpAddress}");
 
             // Verify device by ID, not just IP

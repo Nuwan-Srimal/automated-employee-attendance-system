@@ -19,6 +19,7 @@ namespace Automated_Employee_Attendance_System
     {
         private readonly ESP_Services _espServices;
         private DispatcherTimer _refreshTimer;
+        private DispatcherTimer _statusTimer;
 
         // Dashboard Statistics
         private int _totalEmployees;
@@ -134,13 +135,21 @@ namespace Automated_Employee_Attendance_System
         {
             await LoadDashboardData();
 
-            // Set up auto-refresh timer (refresh every 30 seconds)
+            // Set up auto-refresh timer for statistics and chart (every 30 seconds)
             _refreshTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(30)
             };
             _refreshTimer.Tick += async (s, args) => await LoadDashboardData();
             _refreshTimer.Start();
+
+            // Set up separate timer for system status check (every 10 seconds)
+            _statusTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+            _statusTimer.Tick += async (s, args) => await CheckSystemStatus();
+            _statusTimer.Start();
         }
 
         private async Task LoadDashboardData()

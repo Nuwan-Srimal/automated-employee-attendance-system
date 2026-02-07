@@ -198,45 +198,131 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+
+
+
+
+
+
+
+
+
     <Style TargetType="ScrollBar">
-        <Setter Property="Width" Value="8"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Grid>
-                            <Border Background="{TemplateBinding Background}" 
-                            CornerRadius="4"/>
-                            <Track Name="PART_Track" IsDirectionReversed="True">
-                                <Track.Thumb>
-                                    <Thumb>
-                                        <Thumb.Style>
-                                            <Style TargetType="Thumb">
-                                                <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Thumb">
-                                                            <Border Background="{TemplateBinding Background}"
-                                                            CornerRadius="4"
-                                                            Margin="1"/>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource TextSecondaryBrush}"/>
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </Thumb.Style>
-                                    </Thumb>
-                                </Track.Thumb>
-                            </Track>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <Setter Property="Width" Value="3"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="16"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Up Arrow -->
+                        <Button
+                            Style="{DynamicResource ScrollButton}"
+                        Grid.Row="0"
+                        Command="ScrollBar.LineUpCommand"
+                  
+                        Content="▲"
+                        FontSize="12"
+                        Foreground="{DynamicResource BorderBrush}" />
+
+                        <!-- Track + Thumb -->
+                        <Track
+                        Grid.Row="1"
+                        Name="PART_Track"
+                        IsDirectionReversed="True">
+                            <Track.Thumb>
+                                <Thumb>
+                                    <Thumb.Style>
+                                        <Style TargetType="Thumb">
+                                            <Setter Property="Background" Value="{DynamicResource BorderBrush}"/>
+                                            <Setter Property="Width" Value="10"/> 
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Thumb">
+                                                        <Border
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="5"
+                                                        Margin="1"/>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background"
+                                                                    Value="{DynamicResource TextSecondaryBrush}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Thumb.Style>
+                                </Thumb>
+                            </Track.Thumb>
+                        </Track>
+
+                        <!-- Down Arrow -->
+                        <Button
+                            Style="{DynamicResource ScrollButton}"
+                        Grid.Row="2"
+                        Command="ScrollBar.LineDownCommand"
+                        Foreground="{DynamicResource BorderBrush}"
+                        Content="▼"
+                        FontSize="12"
+                        />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+
+
+
+    <Style x:Key="ScrollButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Height" Value="auto" />
+        <Setter Property="Width" Value="auto" />
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+
+
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                BorderThickness="0"
+                CornerRadius="3">
+                        <ContentPresenter HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Change background and cursor on mouse hover -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+
+                <!-- Use a custom cursor -->
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+
+
+
+
+
+
+
 
     <Style x:Key="ComboBoxFlatStyle"  TargetType="{x:Type ComboBox}">
         <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
@@ -319,6 +405,19 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     <Style TargetType="ComboBoxItem">
         <Setter Property="Background" Value="{DynamicResource Background}"/>
@@ -648,7 +747,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="TabControl">
                     <Grid>
-                        <StackPanel >
+                        <DockPanel>
                             <!-- Tabs -->
                             <TabPanel DockPanel.Dock="Top"
                                   Background="Transparent"
@@ -659,12 +758,13 @@
                             <ContentPresenter x:Name="PART_SelectedContentHost"
                                           Margin="0"
                                           ContentSource="SelectedContent"/>
-                        </StackPanel>
+                        </DockPanel>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+
 
     <Style TargetType="TabItem" x:Key="TabItem">
         <Setter Property="Foreground" Value="#ccc"/>
@@ -987,14 +1087,19 @@
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="Cursor" Value="Hand"/>
+                  
                     <Setter Property="Foreground" Value="{DynamicResource Forground}"/>
 
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
                                 <Border x:Name="Border"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1"
                                     Background="{TemplateBinding Background}"
-                                    CornerRadius="10">
+                                    CornerRadius="5">
+                                   
+                                    
                                     <ContentPresenter VerticalAlignment="Center"/>
                                 </Border>
 
@@ -1014,6 +1119,7 @@
                                         <Setter TargetName="Border"
                                             Property="Background"
                                             Value="#0660FE"/>
+                                       
                                         <Setter Property="Foreground" Value="White"/>
                                         
                                     </Trigger>

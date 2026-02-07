@@ -24,14 +24,15 @@ namespace Automated_Employee_Attendance_System
         private User _user;
         private readonly ESP_Services _esp = new ESP_Services();
         private DispatcherTimer timer;
+        private DispatcherTimer _statusTimer;
 
         public MainWindow(User user)
         {
             InitializeComponent();
             _user = user;
-            
+
             _esp.OnStatusChanged = SetStatus;
-            
+
             ApplyAccess();
             ThemeManager.ApplyTheme(this);
 
@@ -42,6 +43,7 @@ namespace Automated_Employee_Attendance_System
             SetupTrayIcon();
 
             StartDateTime();
+            StartStatusMonitor();
         }
 
 
@@ -58,7 +60,7 @@ namespace Automated_Employee_Attendance_System
             Attendance_Tab.Visibility = _user.Attendance ? Visibility.Visible : Visibility.Collapsed;
             UserManagement_Tab.Visibility = _user.Report ? Visibility.Visible : Visibility.Collapsed;
             Settings_Tab.Visibility = _user.Settings ? Visibility.Visible : Visibility.Collapsed;
-          
+
         }
 
 
@@ -168,41 +170,41 @@ namespace Automated_Employee_Attendance_System
         private double _previousWidth;
         private double _previousHeight;
 
-private void Maximize_Click(object sender, RoutedEventArgs e)
-{
-    if (_isMaximized)
-    {
-        // Restore to previous size and position
-        this.Left = _previousLeft;
-        this.Top = _previousTop;
-        this.Width = _previousWidth;
-        this.Height = _previousHeight;
-        _isMaximized = false;
-    }
-    else
-    {
-        // get before maximizing
-        _previousLeft = this.Left;
-        _previousTop = this.Top;
-        _previousWidth = this.Width;
-        _previousHeight = this.Height;
+        private void Maximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isMaximized)
+            {
+                // Restore to previous size and position
+                this.Left = _previousLeft;
+                this.Top = _previousTop;
+                this.Width = _previousWidth;
+                this.Height = _previousHeight;
+                _isMaximized = false;
+            }
+            else
+            {
+                // get before maximizing
+                _previousLeft = this.Left;
+                _previousTop = this.Top;
+                _previousWidth = this.Width;
+                _previousHeight = this.Height;
 
-        // Get the working area (screen minus taskbar)
-        var workingArea = SystemParameters.WorkArea;
+                // Get the working area (screen minus taskbar)
+                var workingArea = SystemParameters.WorkArea;
 
-        // Set window position and size to working area
-        this.Left = workingArea.Left;
-        this.Top = workingArea.Top;
-        this.Width = workingArea.Width;
-        this.Height = workingArea.Height;
-        
-        _isMaximized = true;
-    }
-}
+                // Set window position and size to working area
+                this.Left = workingArea.Left;
+                this.Top = workingArea.Top;
+                this.Width = workingArea.Width;
+                this.Height = workingArea.Height;
+
+                _isMaximized = true;
+            }
+        }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Hide();
         }
 
@@ -224,6 +226,16 @@ private void Maximize_Click(object sender, RoutedEventArgs e)
             timer.Start();
         }
 
+        private void StartStatusMonitor()
+        {
+            _statusTimer = new DispatcherTimer();
+            _statusTimer.Interval = TimeSpan.FromSeconds(10);
+            _statusTimer.Tick += async (s, e) =>
+            {
+                await _esp.ConnectToSavedDevice();
+            };
+            _statusTimer.Start();
+        }
 
     }
 }

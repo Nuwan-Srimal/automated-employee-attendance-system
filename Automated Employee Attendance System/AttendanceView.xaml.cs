@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,6 +17,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Automated_Employee_Attendance_System.Services;
 using Automated_Employee_Attendance_System.Models;
+using Microsoft.Win32;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using Colors = QuestPDF.Helpers.Colors;
 
 namespace Automated_Employee_Attendance_System
 {
@@ -138,7 +144,7 @@ namespace Automated_Employee_Attendance_System
         {
             await LoadAttendanceData();
             LoadEmployees();
-            
+
             // Load today's calculation by default
             await CalculateAttendanceForDate(DateTime.Today.ToString("yyyy-MM-dd"));
         }
@@ -157,6 +163,7 @@ namespace Automated_Employee_Attendance_System
                 }).ToList();
 
                 CmbEmployee.ItemsSource = employeeDisplayItems;
+                CmbEmployeeId.ItemsSource = employeeDisplayItems;
                 SystemServices.Log($"Loaded {_allEmployees.Count} employees for manual entry");
             }
             catch (Exception ex)
@@ -528,6 +535,160 @@ namespace Automated_Employee_Attendance_System
             await CalculateAttendanceForDate(todayDate);
         }
 
+        // ================= PDF EXPORT =================
+
+        private void ExportPdf_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Get the currently displayed data from CalculationGrid
+                var data = CalculationGrid.ItemsSource as IEnumerable<AttendanceCalculation>;
+
+                if (data == null || !data.Any())
+                {
+                    MessageBox.Show("No data to export. Please calculate attendance first.", "Export Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var records = data.ToList();
+
+                // Show save dialog
+                var saveDialog = new SaveFileDialog
+                {
+                    Filter = "PDF Files (*.pdf)|*.pdf",
+                    FileName = $"Attendance_Report_{DateTime.Now:yyyy-MM-dd_HHmmss}.pdf",
+                    Title = "Export Attendance Report"
+                };
+
+                if (saveDialog.ShowDialog() != true)
+                    return;
+
+                // Set QuestPDF license
+                QuestPDF.Settings.License = LicenseType.Community;
+
+                // Build the PDF
+                Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.Size(PageSizes.A4.Landscape());
+                        page.Margin(30);
+                        page.DefaultTextStyle(x => x.FontSize(10));
+
+                        // ===== HEADER =====
+                        page.Header().Column(col =>
+                        {
+                            col.Item().Text("Attendance Calculation Report")
+                                .FontSize(20).Bold().FontColor(Colors.Blue.Darken2);
+
+                            col.Item().PaddingTop(4).Text($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}")
+                                .FontSize(9).FontColor(Colors.Grey.Darken1);
+
+                            // Summary row
+                            col.Item().PaddingTop(10).Row(row =>
+                            {
+                                row.RelativeItem().Text($"Total: {CalculationTotalEmployees}")
+                                    .FontSize(11).Bold();
+                                row.RelativeItem().Text($"Present: {CalculationPresent}")
+                                    .FontSize(11).Bold().FontColor(Colors.Green.Darken1);
+                                row.RelativeItem().Text($"Absent: {CalculationAbsent}")
+                                    .FontSize(11).Bold().FontColor(Colors.Red.Darken1);
+                                row.RelativeItem().Text($"Missing Checkout: {CalculationMissingCheckout}")
+                                    .FontSize(11).Bold().FontColor(Colors.Orange.Darken1);
+                            });
+
+                            col.Item().PaddingTop(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten1);
+                        });
+
+                        // ===== TABLE CONTENT =====
+                        page.Content().PaddingTop(10).Table(table =>
+                        {
+                            // Define columns
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(1.2f); // Employee ID
+                                columns.RelativeColumn(1.5f); // Employee Name
+                                columns.RelativeColumn(1.2f); // Date
+                                columns.RelativeColumn(1f);   // First Check-in
+                                columns.RelativeColumn(1f);   // Last Check-in
+                                columns.RelativeColumn(1f);   // Working Hours
+                                columns.RelativeColumn(1.2f); // Status
+                            });
+
+                            // Header row
+                            table.Header(header =>
+                            {
+                                var headerStyle = TextStyle.Default.Bold().FontSize(10).FontColor(Colors.White);
+
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Employee ID").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Employee Name").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Date").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("First Check-in").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Last Check-in").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Working Hours").Style(headerStyle);
+                                header.Cell().Background(Colors.Blue.Darken2).Padding(6).Text("Status").Style(headerStyle);
+                            });
+
+                            // Data rows
+                            foreach (var record in records)
+                            {
+                                var rowBg = records.IndexOf(record) % 2 == 0
+                                    ? Colors.White
+                                    : Colors.Grey.Lighten4;
+
+                                var statusColor = record.Status switch
+                                {
+                                    "Present" => Colors.Green.Darken1,
+                                    "Absent" => Colors.Red.Darken1,
+                                    "Missing Check-out" => Colors.Orange.Darken1,
+                                    _ => Colors.Black
+                                };
+
+                                var workingHoursText = record.WorkingHours.HasValue
+                                    ? record.WorkingHours.Value.ToString(@"hh\:mm")
+                                    : "-";
+
+                                table.Cell().Background(rowBg).Padding(5).Text(record.EmployeeId);
+                                table.Cell().Background(rowBg).Padding(5).Text(record.EmployeeName);
+                                table.Cell().Background(rowBg).Padding(5).Text(record.Date);
+                                table.Cell().Background(rowBg).Padding(5).Text(record.FirstCheckIn);
+                                table.Cell().Background(rowBg).Padding(5).Text(record.LastCheckIn);
+                                table.Cell().Background(rowBg).Padding(5).Text(workingHoursText);
+                                table.Cell().Background(rowBg).Padding(5)
+                                    .Text(record.Status).Bold().FontColor(statusColor);
+                            }
+                        });
+
+                        // ===== FOOTER =====
+                        page.Footer().AlignCenter().Text(text =>
+                        {
+                            text.Span("Page ");
+                            text.CurrentPageNumber();
+                            text.Span(" of ");
+                            text.TotalPages();
+                        });
+                    });
+
+                }).GeneratePdf(saveDialog.FileName);
+
+                // Open the PDF after export
+                SystemServices.Log($"PDF exported: {saveDialog.FileName}");
+
+                var openResult = MessageBox.Show("PDF exported successfully!\n\nDo you want to open it?",
+                    "Export Complete", MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+                if (openResult == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo(saveDialog.FileName) { UseShellExecute = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                SystemServices.Log($"PDF export error: {ex.Message}");
+                MessageBox.Show($"Error exporting PDF: {ex.Message}", "Export Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         // ================= EMPLOYEE SPECIFIC SEARCH EVENT HANDLERS =================
 
         private async void SearchEmployeeAttendance_Click(object sender, RoutedEventArgs e)
@@ -535,10 +696,11 @@ namespace Automated_Employee_Attendance_System
             try
             {
                 // Validate input
-                if (string.IsNullOrWhiteSpace(TxtEmployeeId.Text))
+                string employeeId = CmbEmployeeId.SelectedValue?.ToString()?.Trim();
+                if (string.IsNullOrWhiteSpace(employeeId))
                 {
-                    MessageBox.Show("Please enter an Employee ID.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    TxtSearchInfo.Text = "❌ Please enter an Employee ID";
+                    MessageBox.Show("Please select an Employee.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    TxtSearchInfo.Text = "❌ Please select an Employee";
                     TxtSearchInfo.Foreground = Brushes.Red;
                     return;
                 }
@@ -561,8 +723,6 @@ namespace Automated_Employee_Attendance_System
                     TxtSearchInfo.Foreground = Brushes.Red;
                     return;
                 }
-
-                string employeeId = TxtEmployeeId.Text.Trim();
 
                 // Check if employee exists
                 var employee = _allEmployees.FirstOrDefault(e => e.emp_id.Equals(employeeId, StringComparison.OrdinalIgnoreCase));
@@ -613,7 +773,8 @@ namespace Automated_Employee_Attendance_System
         private async void ClearEmployeeSearch_Click(object sender, RoutedEventArgs e)
         {
             // Clear employee search inputs
-            TxtEmployeeId.Text = string.Empty;
+            CmbEmployeeId.SelectedValue = null;
+            CmbEmployeeId.Text = string.Empty;
             EmpStartDatePicker.SelectedDate = DateTime.Today.AddDays(-6);
             EmpEndDatePicker.SelectedDate = DateTime.Today;
 
@@ -633,4 +794,4 @@ namespace Automated_Employee_Attendance_System
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-}   
+}
