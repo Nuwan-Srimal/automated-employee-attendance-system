@@ -233,7 +233,7 @@ namespace Automated_Employee_Attendance_System
 
             if (apDevice != null)
             {
-                var result = MessageBox.Show(
+                var result = CustomMessageBox.Show(
                     "ESP found in AP mode.\n\nDo you want to configure WiFi?",
                     "Setup Required",
                     MessageBoxButton.YesNo,

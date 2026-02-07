@@ -480,6 +480,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Padding" Value="4,3,4,4"/>
+        <Setter Property="Height" Value="35"/>
 
         <Setter Property="VerticalContentAlignment" Value="Top"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
