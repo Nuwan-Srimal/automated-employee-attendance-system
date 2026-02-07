@@ -11,7 +11,7 @@
              SnapsToDevicePixels="True"
              d:DesignWidth="800">
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel Margin="30">
                     <TextBlock Foreground="{DynamicResource Forground}" Text="System Settings" 
