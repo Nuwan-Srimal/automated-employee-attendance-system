@@ -15,6 +15,9 @@ namespace Automated_Employee_Attendance_System.Services
         private static readonly string LogFile =
             Path.Combine(LogFolder, "system_status.txt");
 
+        private static DateTime _lastClearDate = DateTime.MinValue;
+        private static readonly object _logLock = new object();
+
         // ---------------- SAVE STATUS ----------------
         public static void Log(string message)
         {
@@ -23,10 +26,18 @@ namespace Automated_Employee_Attendance_System.Services
                 if (!Directory.Exists(LogFolder))
                     Directory.CreateDirectory(LogFolder);
 
-                ClearOldLogs(); // auto clear old data
+                // Only clear old logs once per day instead of every call
+                if (_lastClearDate.Date != DateTime.Now.Date)
+                {
+                    _lastClearDate = DateTime.Now;
+                    ClearOldLogs();
+                }
 
                 string line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {message}";
-                File.AppendAllText(LogFile, line + Environment.NewLine);
+                lock (_logLock)
+                {
+                    File.AppendAllText(LogFile, line + Environment.NewLine);
+                }
             }
             catch
             {
@@ -42,7 +53,32 @@ namespace Automated_Employee_Attendance_System.Services
                 if (!File.Exists(LogFile))
                     return "";
 
-                return File.ReadAllText(LogFile);
+                lock (_logLock)
+                {
+                    return File.ReadAllText(LogFile);
+                }
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        // ---------------- ASYNC READ (for UI timer use) ----------------
+        public static async Task<string> ReadAllAsync()
+        {
+            try
+            {
+                if (!File.Exists(LogFile))
+                    return "";
+
+                return await Task.Run(() =>
+                {
+                    lock (_logLock)
+                    {
+                        return File.ReadAllText(LogFile);
+                    }
+                });
             }
             catch
             {

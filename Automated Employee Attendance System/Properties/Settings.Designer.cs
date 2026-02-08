@@ -82,5 +82,29 @@ namespace Automated_Employee_Attendance_System.Properties {
                 this["SavedAppPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int SavedReportHour {
+            get {
+                return ((int)(this["SavedReportHour"]));
+            }
+            set {
+                this["SavedReportHour"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int SavedReportMinute {
+            get {
+                return ((int)(this["SavedReportMinute"]));
+            }
+            set {
+                this["SavedReportMinute"] = value;
+            }
+        }
     }
 }

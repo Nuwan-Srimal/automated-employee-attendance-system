@@ -24,6 +24,7 @@ namespace Automated_Employee_Attendance_System
     public partial class SettingsWindow : UserControl
     {
         private ESP_Services _espServices;
+        private DispatcherTimer _statusTimer;
 
         public SettingsWindow()
         {
@@ -31,23 +32,29 @@ namespace Automated_Employee_Attendance_System
 
             _espServices = new ESP_Services();
 
-            DispatcherTimer timer = new DispatcherTimer
+            _statusTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(2)
+                Interval = TimeSpan.FromSeconds(5)
             };
 
-            timer.Tick += (s, e) =>
+            _statusTimer.Tick += async (s, e) =>
             {
-                StatusBox.Text = SystemServices.ReadAll();
+                StatusBox.Text = await SystemServices.ReadAllAsync();
             };
 
-            timer.Start();
+            _statusTimer.Start();
 
             LoadStatus();
             ThemeManager.ApplyTheme(this);
             this.Loaded += Window_Loaded;
+            this.Unloaded += Window_Unloaded;
 
             LoadSavedDevice();
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _statusTimer?.Stop();
         }
 
         private void LoadSavedDevice()
@@ -436,6 +443,25 @@ namespace Automated_Employee_Attendance_System
                     SystemRadio.IsChecked = true;
                     break;
             }
+
+            for (int i = 0; i < 24; i++)
+                HourBox.Items.Add(i.ToString("D2"));
+
+            for (int i = 0; i < 60; i++)
+                MinuteBox.Items.Add(i.ToString("D2"));
+
+            // ✅ Load saved report time from settings
+            int savedHour = Properties.Settings.Default.SavedReportHour;
+            int savedMinute = Properties.Settings.Default.SavedReportMinute;
+
+            HourBox.SelectedIndex = savedHour;
+            MinuteBox.SelectedIndex = savedMinute;
+
+            SystemServices.Log($"Report time loaded: {savedHour:D2}:{savedMinute:D2}");
+
+
+
+
         }
 
         private void LightRadio_Checked(object sender, RoutedEventArgs e)
@@ -461,13 +487,65 @@ namespace Automated_Employee_Attendance_System
 
         #endregion
 
-        void LoadStatus()
+        async void LoadStatus()
         {
             if (StatusBox == null)
                 return;
 
-            StatusBox.Text = SystemServices.ReadAll();
+            StatusBox.Text = await SystemServices.ReadAllAsync();
         }
+
+
+
+
+        private async void SaveReportTime_Click(object sender, RoutedEventArgs e)
+        {
+            var device = DeviceService.Load();
+            if (device == null)
+            {
+                CustomMessageBox.Show("No ESP device connected");
+                return;
+            }
+
+            int hour = int.Parse(HourBox.SelectedItem.ToString());
+            int minute = int.Parse(MinuteBox.SelectedItem.ToString());
+
+            // ✅ Save report time to local settings
+            Properties.Settings.Default.SavedReportHour = hour;
+            Properties.Settings.Default.SavedReportMinute = minute;
+            Properties.Settings.Default.Save();
+
+            SystemServices.Log("Report time saved to local settings");
+
+            var data = new
+            {
+                hour = hour,
+                minute = minute
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var client = new HttpClient();
+            var res = await client.PostAsync($"{device.IpAddress}/setReportTime", content);
+
+            if (res.IsSuccessStatusCode)
+            {
+                CustomMessageBox.Show($"Daily report time set to {hour:D2}:{minute:D2}");
+                SystemServices.Log($"Report time updated: {hour:D2}:{minute:D2}");
+            }
+            else
+            {
+                CustomMessageBox.Show("Failed to save report time");
+            }
+        }
+
+
+
+
+
+
+
 
         private async void SaveEmail_Click(object sender, RoutedEventArgs e)
         {
@@ -542,4 +620,4 @@ namespace Automated_Employee_Attendance_System
 
 
     }
-}﻿
+}

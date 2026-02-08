@@ -109,6 +109,13 @@ namespace Automated_Employee_Attendance_System
 
             // Load data when control is loaded
             Loaded += DashboardWindow_Loaded;
+            Unloaded += DashboardWindow_Unloaded;
+        }
+
+        private void DashboardWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _refreshTimer?.Stop();
+            _statusTimer?.Stop();
         }
 
         private void InitializeChart()

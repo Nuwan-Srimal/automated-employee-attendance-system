@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Text.Json;
@@ -67,7 +68,7 @@ namespace Automated_Employee_Attendance_System.Services
             }
         }
 
-        public async Task<List<Device>> ScanForDevices(Action<string>? progressCallback = null)
+        public async Task<List<Device>> ScanForDevices(Action<string>? progressCallback = null, CancellationToken cancellationToken = default)
         {
             var devices = new List<Device>();
 
@@ -85,18 +86,35 @@ namespace Automated_Employee_Attendance_System.Services
             progressCallback?.Invoke("Scanning LAN...");
             SystemServices.Log("Scanning LAN for devices...");
 
-            for (int i = 1; i < 255; i++)
+            // Scan in parallel batches for much faster discovery
+            const int batchSize = 30;
+            using var scanClient = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
+
+            for (int batchStart = 1; batchStart < 255; batchStart += batchSize)
             {
-                string ip = $"http://192.168.1.{i}";
-                progressCallback?.Invoke($"Scanning {i}/254...");
+                if (cancellationToken.IsCancellationRequested)
+                    break;
 
-                var device = await DiscoverDevice(ip);
+                int batchEnd = Math.Min(batchStart + batchSize - 1, 254);
+                progressCallback?.Invoke($"Scanning {batchStart}-{batchEnd}/254...");
 
-                if (device != null)
+                var tasks = new List<Task<Device?>>();
+                for (int i = batchStart; i <= batchEnd; i++)
                 {
-                    devices.Add(device);
-                    progressCallback?.Invoke($"Device found at {ip}");
-                    SystemServices.Log($"Device found at {ip} (ID: {device.DeviceId})");
+                    string ip = $"http://192.168.1.{i}";
+                    tasks.Add(DiscoverDeviceWithClient(scanClient, ip));
+                }
+
+                var results = await Task.WhenAll(tasks);
+
+                foreach (var device in results)
+                {
+                    if (device != null)
+                    {
+                        devices.Add(device);
+                        progressCallback?.Invoke($"Device found at {device.IpAddress}");
+                        SystemServices.Log($"Device found at {device.IpAddress} (ID: {device.DeviceId})");
+                    }
                 }
             }
 
@@ -104,11 +122,11 @@ namespace Automated_Employee_Attendance_System.Services
             return devices;
         }
 
-        private async Task<Device?> DiscoverDevice(string baseUrl)
+        private async Task<Device?> DiscoverDeviceWithClient(HttpClient httpClient, string baseUrl)
         {
             try
             {
-                var res = await client.GetAsync($"{baseUrl}/discover");
+                var res = await httpClient.GetAsync($"{baseUrl}/discover");
 
                 if (!res.IsSuccessStatusCode)
                     return null;
@@ -149,6 +167,11 @@ namespace Automated_Employee_Attendance_System.Services
             {
                 return null;
             }
+        }
+
+        private async Task<Device?> DiscoverDevice(string baseUrl)
+        {
+            return await DiscoverDeviceWithClient(client, baseUrl);
         }
 
         async Task<bool> Ping(string url)
